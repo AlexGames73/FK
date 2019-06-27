@@ -7,11 +7,9 @@ namespace fk
 {
     class CianParser : IParser
     {
-        private Parameters parameters;
-
-        public void GetURL()
+        public void GetURL(string City, int[] RoomsCount, int PriceLow, int PriceHigh)
         {
-            string url = "https://cian.ru/cat.php" + parameters.ToGET();
+            string url = "https://cian.ru/cat.php";
         }
     }
 }

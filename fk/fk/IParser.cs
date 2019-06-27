@@ -7,6 +7,6 @@ namespace fk
 {
     interface IParser
     {
-        void GetURL();
+        void GetURL(string City, int[] RoomsCount, int PriceLow, int PriceHigh);
     }
 }
