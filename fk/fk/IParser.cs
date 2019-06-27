@@ -5,8 +5,13 @@ using System.Text;
 
 namespace fk
 {
-    interface IParser
+    abstract class IParser
     {
-        void GetURL(string City, int[] RoomsCount, int PriceLow, int PriceHigh);
+        Dictionary<string, string> Cities { get; set; }
+
+        public abstract string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh);
+        public string GetRegion(string City) {
+            return Cities[City];
+        }
     }
 }
