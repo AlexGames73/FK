@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace filter_kvartir
+namespace fk
 {
     class Apartment
     {
         public string Address { get; set; }
-        public int Price { get; set; }
-        public int Square { get; set; }
-        public int Rooms { get; set; }
+        public string Price { get; set; }
+        public string Square { get; set; }
+        public string Rooms { get; set; }
         public string District { get; set; }
 
-        public Apartment(string address, int price, int square, int rooms, string district)
+        public Apartment(string address, string price, string square, string rooms, string district)
         {
             Address = address;
             Price = price;

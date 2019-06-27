@@ -23,5 +23,12 @@ namespace fk
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            AvitoParser avitoParser = new AvitoParser();
+            avitoParser.InputCityes();
+            avitoParser.Parsing();
+        }
     }
 }
