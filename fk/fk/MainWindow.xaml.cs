@@ -23,5 +23,11 @@ namespace fk
         {
             InitializeComponent();
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            CianParser parser = new CianParser();
+            parser.Parse(false, "Ульяновск", new int[] { 2, 3 }, 1000, 50000, 10);
+        }
     }
 }
