@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,9 @@ namespace fk
 {
     abstract class IParser
     {
-        Dictionary<string, string> Cities { get; set; }
+        public Dictionary<string, string> Cities { get; set; }
 
-        public abstract string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh);
-
+        public abstract string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1);
         public string GetRegion(string City) {
             return Cities[City];
         }

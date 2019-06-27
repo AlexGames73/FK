@@ -1,4 +1,7 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +10,96 @@ namespace fk
 {
     class CianParser : IParser
     {
-        public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh)
+        public CianParser()
+        {
+            Cities = new Dictionary<string, string>();
+            Cities.Add("Москва", "1");
+            Cities.Add("Санкт-Петербург", "2");
+            Cities.Add("Новосибирск", "4897");
+            Cities.Add("Екатеринбург", "4743");
+            Cities.Add("Нижний Новгород", "4885");
+            Cities.Add("Казань", "4777");
+            Cities.Add("Самара", "4966");
+            Cities.Add("Челябинск", "5048");
+            Cities.Add("Омск", "5016");
+            Cities.Add("Ростов-на-Дону", "4959");
+            Cities.Add("Уфа", "176245");
+            Cities.Add("Красноярск", "4827");
+            Cities.Add("Пермь", "4927");
+            Cities.Add("Волгоград", "4704");
+            Cities.Add("Ульяновск", "5027");
+        }
+
+        public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
         {
             var deal_type = isBuy ? "sale" : "rent";
-            string url = $"https://cian.ru/cat.php?deal_type={deal_type}&engine_version=2&region={GetRegion(City)}";
+            List<string> rooms = new List<string>();
+            foreach (int room in RoomsCount)
+                rooms.Add($"room{room}=1");
+            string roomsGET = string.Join("&", rooms.ToArray());
+            string url = $"https://cian.ru/cat.php?deal_type={deal_type}&engine_version=2&quality=0&offer_type=flat&maxprice={PriceHigh}&minprice={PriceLow}&region={GetRegion(City)}&{roomsGET}&sort=price_object_order&p={page}";
             return url;
+        }
+
+        public Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
+        {
+            List<Apartment> res = new List<Apartment>();
+
+            HtmlWeb web = new HtmlWeb();
+            web.UsingCache = false;
+            web.CacheOnly = false;
+            web.UseCookies = false;
+
+            var uri = GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh);
+            HtmlDocument document = web.Load(uri);
+
+            var test = document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']");
+            int totalCount = int.Parse(test[0].InnerHtml.Split(' ')[0]);
+            int count = 0;
+
+            using (IWebDriver driver = new ChromeDriver())
+            {
+                driver.Url = "https://raionpoadresu.ru/";
+                HtmlNodeCollection htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
+                foreach (HtmlNode node in htmlNodes)
+                {
+                    res.Add(Parse(node, driver));
+                    count++;
+                }
+
+                for (int i = 1; count < totalCount && i < 10; i++)
+                {
+                    document = web.Load(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh, i + 1));
+
+                    htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
+                    foreach (HtmlNode node in htmlNodes)
+                    {
+                        res.Add(Parse(node, driver));
+                        count++;
+                    }
+                }
+                res.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
+            }
+            return res.ToArray();
+        }
+
+        public Apartment Parse(HtmlNode node, IWebDriver web)
+        {
+            string[] title = node.SelectSingleNode(".//*[@class='c6e8ba5398--title--2CW78']").InnerText.Split(',');
+            string Rooms = title[0][0].ToString();
+            string Square = title[1].Trim().Split(' ')[0];
+
+            List<string> price = new List<string>(node.SelectSingleNode(".//*[@class='c6e8ba5398--header--1df-X']").InnerText.Split(' '));
+            price.RemoveAt(price.Count - 1);
+            string Price = string.Join("", price.ToArray());
+            Console.WriteLine(Price);
+
+            HtmlNodeCollection nodes = node.SelectNodes(".//div[@class='c6e8ba5398--address-links--1pHHO']/div");
+
+            string Address = nodes[3].InnerText + ", " + nodes[4].InnerText;
+            string District = GetDistrict(nodes[0].InnerText + ", " + Address, web);
+
+            return new Apartment(Address, Price, Square, Rooms, District);
         }
     }
 }
