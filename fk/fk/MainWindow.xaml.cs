@@ -29,5 +29,12 @@ namespace fk
             CianParser parser = new CianParser();
             parser.Parse(false, "Ульяновск", new int[] { 2, 3 }, 1000, 50000, 10);
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            AvitoParser avitoParser = new AvitoParser();
+            avitoParser.InputCityes();
+            avitoParser.Parsing();
+        }
     }
 }

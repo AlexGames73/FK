@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace fk
 {
@@ -18,21 +19,23 @@ namespace fk
 
         public string GetDistrict(string address, IWebDriver driver)
         {
-            if (driver.FindElements(By.XPath("//*[@id='result-district-element']/span")).Count != 0)
+            string district = "";
+            try
             {
+                driver.Url = "https://raionpoadresu.ru/";
+                driver.FindElement(By.XPath("//input[@id='address']")).SendKeys(address);
+                driver.FindElement(By.XPath("//button[@id='getDistrictButton']")).Click();
 
+                var elem = driver.FindElements(By.XPath("//*[@id='result-district-element']/span"));
+                while (elem.Count == 0)
+                    elem = driver.FindElements(By.XPath("//*[@id='result-district-element']/span"));
+
+                district = elem[0].Text;
             }
-
-            driver.FindElement(By.XPath("//input[@id='address']")).Clear();
-            driver.FindElement(By.XPath("//input[@id='address']")).SendKeys(address);
-            driver.FindElement(By.XPath("//button[@id='getDistrictButton']")).Click();
-
-            var elem = driver.FindElements(By.XPath("//*[@id='result-district-element']/span"));
-            while (elem.Count == 0)
-                elem = driver.FindElements(By.XPath("//*[@id='result-district-element']/span"));
-
-            var district = elem[0].Text;
-
+            catch (Exception e)
+            {
+                district = GetDistrict(address, driver);
+            }
             return district;
         }
     }
