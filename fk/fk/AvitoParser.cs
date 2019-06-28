@@ -113,5 +113,10 @@ namespace fk
             string ExtraInfo = isBuy ? prodam : sdam;
             return urlAvito + City + ExtraInfo + "?" + "p=" + page;
         }
+
+        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

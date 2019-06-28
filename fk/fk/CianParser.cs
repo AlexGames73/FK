@@ -41,49 +41,90 @@ namespace fk
             return url;
         }
 
-        public Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
+        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
         {
             List<Apartment> res = new List<Apartment>();
 
-            HtmlWeb web = new HtmlWeb();
-            web.UsingCache = false;
-            web.CacheOnly = false;
-            web.UseCookies = false;
+            ChromeDriverService service = ChromeDriverService.CreateDefaultService();
+            service.EnableVerboseLogging = false;
+            service.HideCommandPromptWindow = true;
 
-            var uri = GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh);
-            HtmlDocument document = web.Load(uri);
+            ChromeOptions options = new ChromeOptions();
+            //options.AddArgument("headless");
+
+            IWebDriver web = new ChromeDriver(service, options);
+
+            web.Url = GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh);
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml(web.PageSource);
 
             var test = document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']");
+
+            if (test.Count == 0)
+            {
+                web.Dispose();
+
+                web = new ChromeDriver(service);
+                web.Url = GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh);
+                document.LoadHtml(web.PageSource);
+                while (document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']").Count == 0)
+                    document.LoadHtml(web.PageSource);
+                web.Dispose();
+
+                web = new ChromeDriver(service, options);
+                web.Url = GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh);
+                document.LoadHtml(web.PageSource);
+                test = document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']");
+            }
+
             int totalCount = int.Parse(test[0].InnerHtml.Split(' ')[0]);
             int count = 0;
 
-            using (IWebDriver driver = new ChromeDriver())
+            HtmlNodeCollection htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
+            foreach (HtmlNode node in htmlNodes)
             {
-                driver.Url = "https://raionpoadresu.ru/";
-                HtmlNodeCollection htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
+                res.Add(Parse(node));
+                count++;
+            }
+
+            for (int i = 1; count < totalCount && i < pages; i++)
+            {
+                web.Url = GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh, i + 1);
+                document.LoadHtml(web.PageSource);
+
+                if (document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']").Count == 0)
+                {
+                    web.Dispose();
+
+                    web = new ChromeDriver(service);
+                    web.Url = GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh);
+                    document.LoadHtml(web.PageSource);
+                    while (document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']").Count == 0)
+                        document.LoadHtml(web.PageSource);
+                    web.Dispose();
+
+                    web = new ChromeDriver(service, options);
+                    web.Url = GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh);
+                    document.LoadHtml(web.PageSource);
+                }
+
+                htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
                 foreach (HtmlNode node in htmlNodes)
                 {
-                    res.Add(Parse(node, driver));
+                    res.Add(Parse(node));
                     count++;
                 }
-
-                for (int i = 1; count < totalCount && i < 10; i++)
-                {
-                    document = web.Load(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh, i + 1));
-
-                    htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
-                    foreach (HtmlNode node in htmlNodes)
-                    {
-                        res.Add(Parse(node, driver));
-                        count++;
-                    }
-                }
-                res.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
             }
+            res.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
+
+            SetDistricts(res, web);
+
+            web.Dispose();
+
             return res.ToArray();
         }
 
-        public Apartment Parse(HtmlNode node, IWebDriver web)
+        public Apartment Parse(HtmlNode node)
         {
             string[] title = node.SelectSingleNode(".//*[@class='c6e8ba5398--title--2CW78']").InnerText.Split(',');
             string Rooms = title[0][0].ToString();
@@ -96,10 +137,9 @@ namespace fk
 
             HtmlNodeCollection nodes = node.SelectNodes(".//div[@class='c6e8ba5398--address-links--1pHHO']/div");
 
-            string Address = nodes[3].InnerText + ", " + nodes[4].InnerText;
-            string District = GetDistrict(nodes[0].InnerText + ", " + Address, web);
+            string Address = nodes[0].InnerText + ", " + nodes[nodes.Count - 2].InnerText + " " + nodes[nodes.Count - 1].InnerText;
 
-            return new Apartment(Address, Price, Square, Rooms, District);
+            return new Apartment(Address, Price, Square, Rooms);
         }
     }
 }

@@ -24,6 +24,12 @@ namespace fk
             InitializeComponent();
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            List<Apartment> apartments = new List<Apartment>();
+
+            CianParser cianParser = new CianParser();
+            apartments.AddRange(cianParser.Parse(true, "Ульяновск", new int[] { 3, 4 }, 1000000, 5000000, 2));
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             AvitoParser avitoParser = new AvitoParser();
