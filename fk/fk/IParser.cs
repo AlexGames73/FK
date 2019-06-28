@@ -12,7 +12,7 @@ namespace fk
     {
         public Dictionary<string, string> Cities { get; set; }
 
-        public abstract string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh);
+        public abstract string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1);
 
         public string GetRegion(string City) {
             return Cities[City];

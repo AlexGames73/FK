@@ -85,30 +85,33 @@ namespace fk
         public void Parsing()
         {
             ChromeOptions options = new ChromeOptions();
-            options.AddArgument("headless");
+            //options.AddArgument("headless");
             IWebDriver driver = new ChromeDriver(options);
-            HtmlDocument document = GetHtml(GetURL(true, cityes[city], new int[2], 2, 3));
-            HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='description item_table-description']");
-            foreach (HtmlNode htmlNode in links)
+            for (int i = 0; i < 10; i++)
             {
-                string info = htmlNode.SelectNodes(".//span[@itemprop='name']")[0].InnerHtml;
-                string rooms = info.Split(',')[0].Split('-')[0];
-                string square = info.Split(',')[1].Split(' ')[1];
-                string price = htmlNode.SelectNodes(".//span[@itemprop='price']")[0].GetAttributeValue("content", "");
-                HtmlDocument htmlDocument = GetHtml(urlAvito + htmlNode.SelectNodes(".//a[@class='item-description-title-link']")[0].GetAttributeValue("href", ""));
-                string address = htmlDocument.DocumentNode.SelectNodes(".//span[@itemprop='streetAddress']")[0].InnerHtml;
-                if (address.Split(',').Length < 3)
-                    address = city + ", " + address;
-                string district = GetDistrict(address, driver);
-                apartments.Add(new Apartment(address, price, square, rooms, district));
+                HtmlDocument document = GetHtml(GetURL(true, cityes[city], new int[2], 2, 3, i + 1));
+                HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='description item_table-description']");
+                foreach (HtmlNode htmlNode in links)
+                {
+                    string info = htmlNode.SelectNodes(".//span[@itemprop='name']")[0].InnerHtml;
+                    string rooms = info.Split(',')[0].Split('-')[0];
+                    string square = info.Split(',')[1].Split(' ')[1];
+                    string price = htmlNode.SelectNodes(".//span[@itemprop='price']")[0].GetAttributeValue("content", "");
+                    HtmlDocument htmlDocument = GetHtml(urlAvito + htmlNode.SelectNodes(".//a[@class='item-description-title-link']")[0].GetAttributeValue("href", ""));
+                    string address = htmlDocument.DocumentNode.SelectNodes(".//span[@itemprop='streetAddress']")[0].InnerHtml;
+                    if (address.Split(',').Length < 3)
+                        address = city + ", " + address;
+                    string district = GetDistrict(address, driver);
+                    apartments.Add(new Apartment(address, price, square, rooms, district));
+                }
             }
             driver.Dispose();
         }
 
-        public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh)
+        public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page)
         {
             string ExtraInfo = isBuy ? prodam : sdam;
-            return urlAvito + City + ExtraInfo;
+            return urlAvito + City + ExtraInfo + "?" + "p=" + page;
         }
     }
 }
