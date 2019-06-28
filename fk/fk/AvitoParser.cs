@@ -99,16 +99,20 @@ namespace fk
                 string address = htmlDocument.DocumentNode.SelectNodes(".//span[@itemprop='streetAddress']")[0].InnerHtml;
                 if (address.Split(',').Length < 3)
                     address = city + ", " + address;
-                string district = GetDistrict(address, driver);
-                apartments.Add(new Apartment(address, price, square, rooms, district));
+                apartments.Add(new Apartment(address, price, square, rooms));
             }
             driver.Dispose();
         }
 
-        public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh)
+        public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
         {
             string ExtraInfo = isBuy ? prodam : sdam;
             return urlAvito + City + ExtraInfo;
+        }
+
+        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
+        {
+            throw new NotImplementedException();
         }
     }
 }
