@@ -46,9 +46,6 @@ namespace fk
             List<Apartment> res = new List<Apartment>();
 
             HtmlWeb web = new HtmlWeb();
-            web.UsingCache = false;
-            web.CacheOnly = false;
-            web.UseCookies = false;
 
             var uri = GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh);
             HtmlDocument document = web.Load(uri);

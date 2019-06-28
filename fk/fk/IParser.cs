@@ -18,7 +18,13 @@ namespace fk
 
         public string GetDistrict(string address, IWebDriver driver)
         {
-            driver.FindElement(By.XPath("//input[@id='address']")).SendKeys("Ульяновск Одржоникидзе 59");
+            if (driver.FindElements(By.XPath("//*[@id='result-district-element']/span")).Count != 0)
+            {
+
+            }
+
+            driver.FindElement(By.XPath("//input[@id='address']")).Clear();
+            driver.FindElement(By.XPath("//input[@id='address']")).SendKeys(address);
             driver.FindElement(By.XPath("//button[@id='getDistrictButton']")).Click();
 
             var elem = driver.FindElements(By.XPath("//*[@id='result-district-element']/span"));
