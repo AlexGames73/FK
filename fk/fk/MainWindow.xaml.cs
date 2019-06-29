@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Interop;
 using System.Timers;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace fk
 {
@@ -69,6 +70,11 @@ namespace fk
             WindowState = WindowState.Normal;
         }
 
+        public void HideWindow()
+        {
+            WindowState = WindowState.Minimized;
+        }
+
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
@@ -120,6 +126,12 @@ namespace fk
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
             contextMenu.Hide();
+        }
+
+        private void ButtonInfoClick(object sender, RoutedEventArgs e)
+        {
+            if (!Information.isOpened)
+                new Information();
         }
     }
 }

@@ -55,6 +55,20 @@ namespace fk
         private void ButtonOpenAppClick(object sender, RoutedEventArgs e)
         {
             MainWindow.Instance.OpenWindow();
+            Hide();
+        }
+
+        private void ButtonOpenAboutClick(object sender, RoutedEventArgs e)
+        {
+            if (!Information.isOpened)
+                new Information();
+            Hide();
+        }
+
+        private void ButtonTrayClick(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Instance.HideWindow();
+            Hide();
         }
     }
 }

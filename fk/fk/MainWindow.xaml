@@ -16,11 +16,12 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}">
-    <Grid Background="#ededed">
+    <Grid Background="LightGray">
         <Border BorderBrush="#FF5FA6F8" BorderThickness="0,0,0,2" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="300">
             <Grid>
                 <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                    BorderBrush="{x:Null}" Width="30" Height="30" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Background="{x:Null}" Foreground="#E5000000" Margin="4,0,0,0">
+                    BorderBrush="{x:Null}" Width="30" Height="30" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Background="{x:Null}" Foreground="#E5000000" Margin="4,0,0,0"
+                        Click="ButtonInfoClick">
                     <materialDesign:PackIcon Kind="InfoOutline" Height="20" Width="20" Foreground="#FFA0A0A0" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Button>
                 <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
@@ -28,6 +29,7 @@
                         Click="OnMinimiseWindow">
                     <materialDesign:PackIcon Kind="Close" Height="20" Width="20" Foreground="#FFA01414" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Button>
+                <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Фильтр квартир" VerticalAlignment="Center" FontSize="22" Foreground="#FFA2A2A2"/>
             </Grid>
         </Border>
     </Grid>

@@ -62,8 +62,15 @@
     <Compile Include="ContextMenuWindow.xaml.cs">
       <DependentUpon>ContextMenuWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Information.xaml.cs">
+      <DependentUpon>Information.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MouseHelper.cs" />
     <Page Include="ContextMenuWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Information.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

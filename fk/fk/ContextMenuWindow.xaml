@@ -18,7 +18,8 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}" 
-        MouseLeave="Window_MouseLeave">
+        MouseLeave="Window_MouseLeave"
+        ShowInTaskbar="False">
     <Grid Background="LightGray">
         <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="160"
                 Margin="0,8,0,8" VerticalAlignment="Top" Background="LightGray" 
@@ -26,17 +27,19 @@
             Открыть
         </Button>
         <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="160"
-                Margin="0,48,0,8" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="LightGray">
-            Comming soon
+                Margin="0,48,0,8" VerticalAlignment="Top" Background="LightGray" BorderBrush="{x:Null}"
+                Click="ButtonTrayClick">
+            Свернуть
         </Button>
         <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="160"
-                Margin="0,88,0,8" VerticalAlignment="Top" Background="LightGray" BorderBrush="{x:Null}">
-            Comming soon
+                Margin="0,0,0,48" VerticalAlignment="Bottom" BorderBrush="{x:Null}" Background="LightGray"
+                Click="ButtonOpenAboutClick">
+            О программе
         </Button>
         <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="160"
                 Margin="0,0,0,8" VerticalAlignment="Bottom" Click="ButtonExitClick" 
                 BorderBrush="{x:Null}" Background="LightGray">
-            Exit
+            Выйти
         </Button>
     </Grid>
 </Window>
