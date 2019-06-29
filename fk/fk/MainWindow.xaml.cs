@@ -29,13 +29,13 @@ namespace fk
             List<Apartment> apartments = new List<Apartment>();
 
             CianParser cianParser = new CianParser();
-            apartments.AddRange(cianParser.Parse(true, "Ульяновск", new int[] { 3, 4 }, 1000000, 5000000, 2));
+            apartments.AddRange(cianParser.Parse(true, "Ульяновск", new int[] { 2, 3 }, 1000000, 1500000, 10));
 
-            AvitoParser avitoParser = new AvitoParser();
-            avitoParser.InputCityes();
-            avitoParser.Parsing();
+            //AvitoParser avitoParser = new AvitoParser();
+            //avitoParser.InputCityes();
+            //avitoParser.Parsing();
 
-            apartments.AddRange(avitoParser.apartments);
+            //apartments.AddRange(avitoParser.apartments);
         }
     }
 }

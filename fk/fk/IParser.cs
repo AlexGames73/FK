@@ -34,7 +34,7 @@ namespace fk
                 sdsa = serializer.Deserialize<dynamic>(Encoding.UTF8.GetString(web.DownloadData(url + nextURL)));
                 sdsa = sdsa["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["Address"]["Components"];
                 var district = "-";
-                for (int i = 0; i < sdsa.Length; i++)
+                for (int i = sdsa.Length - 1; i >= 0; i--)
                 {
                     if (sdsa[i]["kind"] == "district")
                     {
