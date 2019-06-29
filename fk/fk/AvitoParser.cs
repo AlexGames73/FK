@@ -101,8 +101,16 @@ namespace fk
                     string address = htmlDocument.DocumentNode.SelectNodes(".//span[@itemprop='streetAddress']")[0].InnerHtml;
                     if (address.Split(',').Length < 3)
                         address = city + ", " + address;
-                    string district = GetDistrict(address, driver);
-                    apartments.Add(new Apartment(address, price, square, rooms, district));
+                    string district = GetDistrict(address);
+                    apartments.Add(
+                        Apartment.Builder()
+                        .SetAddress(address)
+                        .SetPrice(price)
+                        .SetSquare(square)
+                        .SetRooms(rooms)
+                        .SetDistrict(district)
+                        .Build()
+                    );
                 }
             }
             driver.Dispose();

@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Web.Script.Serialization;
 using System.Windows;
 
 namespace fk
@@ -20,39 +22,29 @@ namespace fk
             return Cities[City];
         }
 
-        public void SetDistricts(List<Apartment> apartments, IWebDriver driver)
+        public string GetDistrict(string address)
         {
-            driver.Url = "https://raionpoadresu.ru/";
-
-            driver.FindElement(By.XPath("//input[@id='address']")).SendKeys("Ульяновск, Северный венец 32");
-            driver.FindElement(By.XPath("//button[@id='getDistrictButton']")).Click();
-
-            while (driver.FindElements(By.XPath("//*[@id='result-element']"))[0].GetCssValue("display") == "none") { }
-
-            int i = 0;
-            foreach (Apartment apartment in apartments)
+            string url = "https://geocode-maps.yandex.ru/1.x/?kind=district&format=json&geocode=";
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            WebClient web = new WebClient();
+            try
             {
-                bool isNext = false;
-                while (!isNext)
+                dynamic sdsa = serializer.Deserialize<dynamic>(Encoding.UTF8.GetString(web.DownloadData(url + address)));
+                string nextURL = sdsa["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["Point"]["pos"];
+                sdsa = serializer.Deserialize<dynamic>(Encoding.UTF8.GetString(web.DownloadData(url + nextURL)));
+                sdsa = sdsa["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["Address"]["Components"];
+                var district = "-";
+                for (int i = 0; i < sdsa.Length; i++)
                 {
-                    try
+                    if (sdsa[i]["kind"] == "district")
                     {
-                        driver.FindElement(By.XPath("//input[@id='address']")).Clear();
-                        driver.FindElement(By.XPath("//input[@id='address']")).SendKeys(apartment.Address);
-                        driver.FindElement(By.XPath("//button[@id='getDistrictButton']")).Click();
-
-                        var elem = driver.FindElements(By.XPath("//*[@id='result-element']"));
-                        while (elem[0].GetCssValue("display") == "none")
-                            elem = driver.FindElements(By.XPath("//*[@id='result-element']"));
-
-                        apartment.District = elem[0].Text;
-                        isNext = true;
-                        Console.WriteLine(i);
+                        district = sdsa[i]["name"];
+                        break;
                     }
-                    catch (Exception) { }
                 }
-                i++;
+                return district;
             }
+            catch (Exception) { return "-"; }
         }
     }
 }

@@ -51,6 +51,7 @@ namespace fk
             List<Apartment> res = new List<Apartment>();
 
             HtmlWeb web = new HtmlWeb();
+            web.UseCookies = true;
             web.CachePath = Directory.GetCurrentDirectory();
             HtmlDocument document = web.Load(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh));
             var test = document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']");
@@ -66,7 +67,6 @@ namespace fk
             for (int i = 1; count < totalCount && i < pages; i++)
             {
                 document = web.Load(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh, i + 1));
-
                 htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
                 foreach (HtmlNode node in htmlNodes)
                 {
@@ -75,9 +75,6 @@ namespace fk
                 }
             }
             res.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
-
-            SetDistricts(res);
-
             return res.ToArray();
         }
 
@@ -86,34 +83,20 @@ namespace fk
             string[] title = node.SelectSingleNode(".//*[@class='c6e8ba5398--title--2CW78']").InnerText.Split(',');
             string Rooms = title[0][0].ToString();
             string Square = title[1].Trim().Split(' ')[0];
-
             List<string> price = new List<string>(node.SelectSingleNode(".//*[@class='c6e8ba5398--header--1df-X']").InnerText.Split(' '));
             price.RemoveAt(price.Count - 1);
             string Price = string.Join("", price.ToArray());
             Console.WriteLine(Price);
-
             HtmlNodeCollection nodes = node.SelectNodes(".//div[@class='c6e8ba5398--address-links--1pHHO']/div");
-
             string Address = nodes[0].InnerText + ", " + nodes[nodes.Count - 2].InnerText + " " + nodes[nodes.Count - 1].InnerText;
-
-            return new Apartment(Address, Price, Square, Rooms);
-        }
-
-        public void SetDistricts(List<Apartment> apartments)
-        {
-            string url = "https://geocode-maps.yandex.ru/1.x/?kind=district&format=json&geocode=";
-
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            WebClient web = new WebClient();
-            foreach (Apartment apartment in apartments)
-            {
-                try {
-                    dynamic sdsa = serializer.Deserialize<dynamic>(Encoding.UTF8.GetString(web.DownloadData(url + apartment.Address)));
-                    string nextURL = sdsa["response"]["GeoObjectCollection"]["featureMember"]["Point"]["pos"];
-                    sdsa = serializer.Deserialize<dynamic>(Encoding.UTF8.GetString(web.DownloadData(url + nextURL)));
-                    apartment.District = sdsa["response"]["GeoObjectCollection"]["featureMember"]["GeoObject"]["name"];
-                } catch (Exception) { apartment.District = "-"; }
-            }
+            string District = GetDistrict(Address);
+            return Apartment.Builder()
+                .SetAddress(Address)
+                .SetPrice(Price)
+                .SetSquare(Square)
+                .SetRooms(Rooms)
+                .SetDistrict(District)
+                .Build();
         }
     }
 }
