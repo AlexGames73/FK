@@ -59,11 +59,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ContextMenu.xaml.cs">
-      <DependentUpon>ContextMenu.xaml</DependentUpon>
+    <Compile Include="ContextMenuWindow.xaml.cs">
+      <DependentUpon>ContextMenuWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MouseHelper.cs" />
-    <Page Include="ContextMenu.xaml">
+    <Page Include="ContextMenuWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

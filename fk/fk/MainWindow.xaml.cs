@@ -23,6 +23,10 @@ namespace fk
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static MainWindow Instance;
+
+        public ContextMenuWindow contextMenu;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -35,28 +39,34 @@ namespace fk
             ni.Icon = new Icon(Application.GetResourceStream(new Uri("pack://application:,,,/home.ico", UriKind.RelativeOrAbsolute)).Stream);
             ni.Visible = true;
             ni.MouseClick += Ni_MouseClick;
+
+            contextMenu = new ContextMenuWindow();
+            Instance = this;
         }
 
         private void Ni_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                ContextMenu cm = FindResource("cmButton") as ContextMenu;
-                cm.PlacementTarget = sender as Button;
-                cm.IsOpen = true;
+                contextMenu.OpenMenu();
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
                 if (WindowState == WindowState.Minimized)
                 {
-                    Show();
-                    WindowState = WindowState.Normal;
+                    OpenWindow();
                 }
                 else
                 {
                     WindowState = WindowState.Minimized;
                 }
             }
+        }
+
+        public void OpenWindow()
+        {
+            Show();
+            WindowState = WindowState.Normal;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -109,8 +119,7 @@ namespace fk
 
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
-            ContextMenu cm = FindResource("cmButton") as ContextMenu;
-            cm.IsOpen = false;
+            contextMenu.Hide();
         }
     }
 }

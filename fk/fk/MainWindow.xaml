@@ -7,7 +7,6 @@
         mc:Ignorable="d"
         WindowStyle="None"
         AllowsTransparency="True"
-        ResizeMode="CanResizeWithGrip"
         Title="OnlySingle" Height="500" Width="300" Loaded="Window_Loaded" Icon="home.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
