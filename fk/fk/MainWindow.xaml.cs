@@ -16,6 +16,7 @@ using System.Threading;
 using System.Windows.Interop;
 using System.Timers;
 using Brushes = System.Windows.Media.Brushes;
+using System.Runtime.InteropServices;
 
 namespace fk
 {
@@ -27,6 +28,8 @@ namespace fk
         public static MainWindow Instance;
 
         public ContextMenuWindow contextMenu;
+        public static int rentSale = 0;
+        public System.Windows.Forms.NotifyIcon ni;
 
         public MainWindow()
         {
@@ -36,7 +39,7 @@ namespace fk
             Left = SystemParameters.PrimaryScreenWidth - Width - 10;
             Top = SystemParameters.PrimaryScreenHeight - Height - 50;
 
-            System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
+            ni = new System.Windows.Forms.NotifyIcon();
             ni.Icon = new Icon(Application.GetResourceStream(new Uri("pack://application:,,,/home.ico", UriKind.RelativeOrAbsolute)).Stream);
             ni.Visible = true;
             ni.MouseClick += Ni_MouseClick;
@@ -48,19 +51,13 @@ namespace fk
         private void Ni_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
                 contextMenu.OpenMenu();
-            }
             else if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
                 if (WindowState == WindowState.Minimized)
-                {
                     OpenWindow();
-                }
                 else
-                {
                     WindowState = WindowState.Minimized;
-                }
             }
         }
 
@@ -132,6 +129,13 @@ namespace fk
         {
             if (!Information.isOpened)
                 new Information();
+        }
+
+        private void ListboxSaleRent_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listboxSaleRent.SelectedIndex == -1)
+                listboxSaleRent.SelectedIndex = rentSale;
+            rentSale = listboxSaleRent.SelectedIndex;
         }
     }
 }

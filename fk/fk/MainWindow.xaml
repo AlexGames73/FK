@@ -32,5 +32,20 @@
                 <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Фильтр квартир" VerticalAlignment="Center" FontSize="22" Foreground="#FFA2A2A2"/>
             </Grid>
         </Border>
+        <ListBox SelectionChanged="ListboxSaleRent_SelectionChanged" Name="listboxSaleRent" Style="{StaticResource MaterialDesignToolToggleListBox}" SelectedIndex="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50,69,50,403" Background="#FFECECEC">
+            <ListBoxItem Width="100" HorizontalContentAlignment="Center" Content="Купить"/>
+            <ListBoxItem Width="100" HorizontalContentAlignment="Center" Content="Снять"/>
+        </ListBox>
+        <TextBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                 materialDesign:HintAssist.FloatingOffset="1,-20" Margin="10,102,10,0" 
+                 materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Center" 
+                 VerticalAlignment="Top" Width="280" FontSize="20" Height="60" Background="{x:Null}" Padding="6,0,0,2">
+            <materialDesign:HintAssist.Hint>
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+                    <materialDesign:PackIcon Kind="Account" Width="28" Height="28" />
+                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Enter email</TextBlock>
+                </StackPanel>
+            </materialDesign:HintAssist.Hint>
+        </TextBox>
     </Grid>
 </Window>

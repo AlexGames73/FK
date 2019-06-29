@@ -20,9 +20,6 @@ namespace fk
         public const string TITLE = "Фильтр квартир";
 
         [DllImport("user32", CharSet = CharSet.Unicode)] static extern IntPtr FindWindow(string cls, string win);
-        [DllImport("user32")] static extern IntPtr SetForegroundWindow(IntPtr hWnd);
-        [DllImport("user32")] static extern bool IsIconic(IntPtr hWnd);
-        [DllImport("user32")] static extern bool OpenIcon(IntPtr hWnd);
         [DllImport("user32")] static extern bool SendMessage(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam);
 
         protected override void OnStartup(StartupEventArgs e)
@@ -37,6 +34,14 @@ namespace fk
                 }
             }
             catch (Exception) { }
+            base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            fk.MainWindow.Instance.ni.Dispose();
+
+            base.OnExit(e);
         }
     }
 }
