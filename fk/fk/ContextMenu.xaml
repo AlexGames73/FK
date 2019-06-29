@@ -1,0 +1,38 @@
+﻿<Window x:Class="fk.ContextMenu"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:fk"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Title="OnlySingle" Height="200" Width="150" Loaded="Window_Loaded" Icon="home.ico"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}" MouseLeave="Window_MouseLeave">
+    <Grid>
+        <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="150"
+                        ToolTip="Resource name: MaterialDesignRaisedLightButton" Margin="0,0,0,8" VerticalAlignment="Top">
+            LIGHT
+        </Button>
+        <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="150"
+                        ToolTip="Resource name: MaterialDesignRaisedLightButton" Margin="0,40,0,8" VerticalAlignment="Top">
+            LIGHT
+        </Button>
+        <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="150"
+                        ToolTip="Resource name: MaterialDesignRaisedLightButton" Margin="0,80,0,8" VerticalAlignment="Top">
+            LIGHT
+        </Button>
+        <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Width="150"
+                        ToolTip="Resource name: MaterialDesignRaisedLightButton" Margin="0,0,0,8" VerticalAlignment="Bottom">
+            LIGHT
+        </Button>
+    </Grid>
+</Window>
