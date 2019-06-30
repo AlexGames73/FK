@@ -5,6 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:fk"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
-    <Grid/>
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Title="OnlySingle" Height="500" Width="300" Loaded="Window_Loaded" Icon="home.ico"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+    <Grid Background="LightGray">
+        <Border BorderBrush="#FF5FA6F8" BorderThickness="0,0,0,2" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="300">
+            <Grid>
+                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                    BorderBrush="{x:Null}" Width="30" Height="30" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Background="{x:Null}" Foreground="#E5000000" Margin="4,0,0,0"
+                        Click="ButtonInfoClick">
+                    <materialDesign:PackIcon Kind="InfoOutline" Height="20" Width="20" Foreground="#FFA0A0A0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                    BorderBrush="{x:Null}" Width="30" Height="30" HorizontalContentAlignment="Center" HorizontalAlignment="Right" Background="{x:Null}" Foreground="#E5FF0000" Margin="0,0,4,0"
+                        Click="OnMinimiseWindow">
+                    <materialDesign:PackIcon Kind="Close" Height="20" Width="20" Foreground="#FFA01414" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+                <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Фильтр квартир" VerticalAlignment="Center" FontSize="22" Foreground="#FFA2A2A2"/>
+            </Grid>
+        </Border>
+        <ListBox SelectionChanged="ListboxSaleRent_SelectionChanged" Name="listboxSaleRent" Style="{StaticResource MaterialDesignToolToggleListBox}" SelectedIndex="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50,69,50,403" Background="#FFECECEC">
+            <ListBoxItem Width="100" HorizontalContentAlignment="Center" Content="Купить"/>
+            <ListBoxItem Width="100" HorizontalContentAlignment="Center" Content="Снять"/>
+        </ListBox>
+        <TextBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                 materialDesign:HintAssist.FloatingOffset="1,-20" Margin="10,102,10,0" 
+                 materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Center" 
+                 VerticalAlignment="Top" Width="280" FontSize="20" Height="60" Background="{x:Null}" Padding="6,0,0,2">
+            <materialDesign:HintAssist.Hint>
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+                    <materialDesign:PackIcon Kind="Account" Width="28" Height="28" />
+                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Enter email</TextBlock>
+                </StackPanel>
+            </materialDesign:HintAssist.Hint>
+        </TextBox>
+    </Grid>
 </Window>

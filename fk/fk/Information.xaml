@@ -1,0 +1,59 @@
+﻿<Window x:Class="fk.Information"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:fk"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Title="OnlySingle" Height="300" Width="250" Icon="home.ico"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}" 
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False">
+    <Grid Background="LightGray">
+        <Border BorderBrush="#FF5FA6F8" BorderThickness="0,0,0,2" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="250">
+            <Grid>
+                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                    BorderBrush="{x:Null}" Width="30" Height="30" HorizontalContentAlignment="Center" HorizontalAlignment="Right" Background="{x:Null}" Foreground="#E5FF0000" Margin="0,0,4,0"
+                        Click="ButtonCloseClick">
+                    <materialDesign:PackIcon Kind="Close" Height="20" Width="20" Foreground="#FFA01414" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+                <TextBlock Margin="4" HorizontalAlignment="Left" TextWrapping="Wrap" Text="О программе" VerticalAlignment="Center" FontSize="22" Foreground="#FFA2A2A2"/>
+            </Grid>
+        </Border>
+        <TextBlock HorizontalAlignment="Left" Height="245" Margin="10,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="230">
+            <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                 <FlowDocument FontSize="13"
+                               FontFamily="Roboto" 
+                               Foreground="Black" 
+                               PagePadding="0">
+                     <Paragraph TextIndent="20" 
+                                Margin="5,0,5,10">
+                         Наше приложение "Фильтр квартир" облегчает поиск квартир для покупки и съема в 15-ти крупнейших городах России.
+                     </Paragraph>
+                     <Paragraph TextIndent="20" 
+                                Margin="5,0,5,10">
+                         "Фильтр квартир" анализирует три большие базы недвижимости (Avito, Youla и Cian) и отправляет Вам варианты по индивидуальным параметрам.
+                     </Paragraph>
+                     <Paragraph TextIndent="20" 
+                                Margin="5,0,5,10">
+                         ОТПРАВИТЬ - отправить письмо с предложениями прямо сейчас.
+                     </Paragraph>
+                     <Paragraph TextIndent="20" 
+                                Margin="5,0,5,10">
+                         СОХРАНИТЬ - сохранить изменения и включить рассылку.
+                     </Paragraph>
+                 </FlowDocument>
+            </FlowDocumentScrollViewer>
+        </TextBlock>
+    </Grid>
+</Window>

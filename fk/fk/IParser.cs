@@ -1,10 +1,13 @@
-﻿using OpenQA.Selenium;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Web.Script.Serialization;
 using System.Windows;
 
 namespace fk
@@ -19,6 +22,29 @@ namespace fk
             return Cities[City];
         }
 
-        public abstract string SetDistricts(string address);
+        public string GetDistrict(string address)
+        {
+            string url = "https://geocode-maps.yandex.ru/1.x/?kind=district&format=json&geocode=";
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            WebClient web = new WebClient();
+            try
+            {
+                dynamic sdsa = serializer.Deserialize<dynamic>(Encoding.UTF8.GetString(web.DownloadData(url + address)));
+                string nextURL = sdsa["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["Point"]["pos"];
+                sdsa = serializer.Deserialize<dynamic>(Encoding.UTF8.GetString(web.DownloadData(url + nextURL)));
+                sdsa = sdsa["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["Address"]["Components"];
+                var district = "-";
+                for (int i = sdsa.Length - 1; i >= 0; i--)
+                {
+                    if (sdsa[i]["kind"] == "district")
+                    {
+                        district = sdsa[i]["name"];
+                        break;
+                    }
+                }
+                return district;
+            }
+            catch (Exception) { return "-"; }
+        }
     }
 }
