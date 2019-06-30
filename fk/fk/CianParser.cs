@@ -49,9 +49,8 @@ namespace fk
         public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
         {
             List<Apartment> res = new List<Apartment>();
-            CookieContainer cookies = new CookieContainer();
-            cookies.Add(new System.Net.Cookie("anti_bot", "2|1:0|10:1561887761|8:anti_bot|44:eyJyZW1vdGVfaXAiOiAiMTI4LjczLjIzOC4xMjcifQ==|dd5b0d53303011d29da97295e883872d557ab703ced029ad0853c318aa04b103", "/", ".cian.ru"));
-            HtmlDocument document = GetPage(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh), cookies);
+            HtmlWeb web = new HtmlWeb();
+            HtmlDocument document = web.Load(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh));
             var test = document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']");
             int totalCount = int.Parse(test[0].InnerText.Split(' ')[0]);
             int count = 0;
@@ -63,7 +62,7 @@ namespace fk
             }
             for (int i = 1; count < totalCount && i < pages; i++)
             {
-                document = GetPage(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh, i + 1), cookies);
+                document = web.Load(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh, i + 1));
                 htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
                 foreach (HtmlNode node in htmlNodes)
                 {
@@ -73,22 +72,6 @@ namespace fk
             }
             res.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
             return res.ToArray();
-        }
-
-        public HtmlDocument GetPage(string url, CookieContainer cookies)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "GET";
-            request.CookieContainer = cookies;
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            var stream = response.GetResponseStream();
-            using (var reader = new StreamReader(stream))
-            {
-                string html = reader.ReadToEnd();
-                var doc = new HtmlDocument();
-                doc.LoadHtml(html);
-                return doc;
-            }
         }
 
         public Apartment Parse(HtmlNode node)

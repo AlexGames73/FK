@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStyle="None"
         AllowsTransparency="True"
-        Title="OnlySingle" Height="500" Width="300" Loaded="Window_Loaded" Icon="home.ico"
+        Title="OnlySingle" Height="600" Width="300" Loaded="Window_Loaded" Icon="home.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -32,22 +32,84 @@
                 <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Фильтр квартир" VerticalAlignment="Center" FontSize="22" Foreground="#FFA2A2A2"/>
             </Grid>
         </Border>
-        <ListBox SelectionChanged="ListboxSaleRent_SelectionChanged" Name="listboxSaleRent" Style="{StaticResource MaterialDesignToolToggleListBox}" SelectedIndex="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50,69,50,403" Background="#FFECECEC">
+        <ListBox SelectionChanged="ListboxSaleRent_SelectionChanged" Name="listboxSaleRent" Style="{StaticResource MaterialDesignToolToggleListBox}" SelectedIndex="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="50,45,50,527" Background="#FFECECEC">
             <ListBoxItem Width="100" HorizontalContentAlignment="Center" Content="Купить"/>
             <ListBoxItem Width="100" HorizontalContentAlignment="Center" Content="Снять"/>
         </ListBox>
         <TextBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                 materialDesign:HintAssist.FloatingOffset="1,-20" Margin="10,102,10,0" 
+                 materialDesign:HintAssist.FloatingOffset="1,-20" Margin="10,78,10,0" 
                  materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Center" 
                  VerticalAlignment="Top" Width="280" FontSize="20" Height="60" Background="{x:Null}" Padding="6,0,0,2"
                  TextChanged="TextBox_TextChanged">
             <materialDesign:HintAssist.Hint>
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
                     <materialDesign:PackIcon Kind="Account" Width="28" Height="28" />
-                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Enter email</TextBlock>
+                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Введите E-mail</TextBlock>
                 </StackPanel>
             </materialDesign:HintAssist.Hint>
         </TextBox>
-        <TextBlock Name="Error_email" Text="{Binding ErrorEmail}" Margin="10,162,10,300" VerticalAlignment="Center" FontSize="15" Foreground="Red"/>
+        <TextBlock Name="Error_email" Text="{Binding ErrorEmail}" Margin="30,143,30,439" VerticalAlignment="Center" FontSize="15" Foreground="Red"/>
+        <ComboBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
+                  materialDesign:HintAssist.FloatingOffset="1,-20"
+                  materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Left" 
+                  Margin="10,179,0,0" VerticalAlignment="Top" Width="280" SelectedIndex="0" Height="45" FontSize="20" VerticalContentAlignment="Center">
+            <materialDesign:HintAssist.Hint>
+                <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Город поиска</TextBlock>
+            </materialDesign:HintAssist.Hint>
+            <ComboBoxItem>Ульяновск</ComboBoxItem>
+            <ComboBoxItem>Москва</ComboBoxItem>
+            <ComboBoxItem>Санкт-Петербург</ComboBoxItem>
+            <ComboBoxItem>Новосибирск</ComboBoxItem>
+            <ComboBoxItem>Екатеринбург</ComboBoxItem>
+            <ComboBoxItem>Нижний Новгород</ComboBoxItem>
+            <ComboBoxItem>Казань</ComboBoxItem>
+            <ComboBoxItem>Самара</ComboBoxItem>
+            <ComboBoxItem>Челябинск</ComboBoxItem>
+            <ComboBoxItem>Омск</ComboBoxItem>
+            <ComboBoxItem>Ростов-на-Дону</ComboBoxItem>
+            <ComboBoxItem>Уфа</ComboBoxItem>
+            <ComboBoxItem>Красноярск</ComboBoxItem>
+            <ComboBoxItem>Пермь</ComboBoxItem>
+            <ComboBoxItem>Волгоград</ComboBoxItem>
+        </ComboBox>
+        <ComboBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
+                  materialDesign:HintAssist.FloatingOffset="1,-20"
+                  materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Left" 
+                  Margin="10,248,0,0" VerticalAlignment="Top" Width="280" SelectedIndex="0" 
+                  Height="45" FontSize="20" VerticalContentAlignment="Center">
+            <materialDesign:HintAssist.Hint>
+                <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Время рассылки</TextBlock>
+            </materialDesign:HintAssist.Hint>
+            <ComboBoxItem>00:00</ComboBoxItem>
+            <ComboBoxItem>01:00</ComboBoxItem>
+            <ComboBoxItem>02:00</ComboBoxItem>
+            <ComboBoxItem>03:00</ComboBoxItem>
+            <ComboBoxItem>04:00</ComboBoxItem>
+            <ComboBoxItem>05:00</ComboBoxItem>
+            <ComboBoxItem>06:00</ComboBoxItem>
+            <ComboBoxItem>07:00</ComboBoxItem>
+            <ComboBoxItem>08:00</ComboBoxItem>
+            <ComboBoxItem>09:00</ComboBoxItem>
+            <ComboBoxItem>10:00</ComboBoxItem>
+            <ComboBoxItem>11:00</ComboBoxItem>
+            <ComboBoxItem>12:00</ComboBoxItem>
+            <ComboBoxItem>13:00</ComboBoxItem>
+            <ComboBoxItem>14:00</ComboBoxItem>
+            <ComboBoxItem>15:00</ComboBoxItem>
+            <ComboBoxItem>16:00</ComboBoxItem>
+            <ComboBoxItem>17:00</ComboBoxItem>
+            <ComboBoxItem>18:00</ComboBoxItem>
+            <ComboBoxItem>19:00</ComboBoxItem>
+            <ComboBoxItem>20:00</ComboBoxItem>
+            <ComboBoxItem>21:00</ComboBoxItem>
+            <ComboBoxItem>22:00</ComboBoxItem>
+            <ComboBoxItem>23:00</ComboBoxItem>
+        </ComboBox>
+        <ListBox SelectionChanged="ListboxSaleRent_SelectionChanged" Style="{StaticResource MaterialDesignToolToggleFlatListBox}" 
+                 SelectedIndex="0" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                 Margin="50,364,50,0" Background="#FFECECEC">
+            <ListBoxItem Width="100" HorizontalContentAlignment="Center" Content="Купить"/>
+            <ListBoxItem Width="100" HorizontalContentAlignment="Center" Content="Снять"/>
+        </ListBox>
     </Grid>
 </Window>

@@ -18,6 +18,8 @@ using System.Timers;
 using Brushes = System.Windows.Media.Brushes;
 using System.Runtime.InteropServices;
 using System.Net.Mail;
+using HtmlAgilityPack;
+using System.Net;
 
 namespace fk
 {
@@ -115,7 +117,8 @@ namespace fk
 
             apartments.Clear();
             CianParser cianParser = new CianParser();
-            apartments.AddRange(cianParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6));
+            try { apartments.AddRange(cianParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); }
+            catch (Exception) { }
 
             new TableCreator().CreateTable(apartments);
         }

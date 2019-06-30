@@ -8,7 +8,6 @@ namespace fk
 {
     class ErrorsContext
     {
-
         public string ErrorEmail { get; set; }
     }
 }
