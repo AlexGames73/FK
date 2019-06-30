@@ -30,6 +30,7 @@ namespace fk
         public ContextMenuWindow contextMenu;
         public static int rentSale = 0;
         public System.Windows.Forms.NotifyIcon ni;
+        int[] RoomsCount = { 2, 3 };
 
         public MainWindow()
         {
