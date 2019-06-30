@@ -64,6 +64,7 @@
       <DependentUpon>ContextMenuWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ErrorsContext.cs" />
+    <Compile Include="DomofondParser.cs" />
     <Compile Include="Information.xaml.cs">
       <DependentUpon>Information.xaml</DependentUpon>
     </Compile>
