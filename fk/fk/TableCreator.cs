@@ -21,11 +21,23 @@ namespace fk
             workSheet.Cells[1, "C"] = "Площадь";
             workSheet.Cells[1, "D"] = "Количество комнат";
             workSheet.Cells[1, "E"] = "Район";
-            workSheet.Columns.AutoFit();
 
             AddList(apartments, workSheet);
+            excelApp.DisplayAlerts = false;
+            workSheet.Columns.AutoFit();
 
-            workSheet.SaveAs(Directory.GetCurrentDirectory() + "/table.xlsx");
+            workSheet.SaveAs(
+                Directory.GetCurrentDirectory() + "/table.xlsx", 
+                XlFileFormat.xlWorkbookDefault, 
+                Type.Missing, 
+                Type.Missing, 
+                true, 
+                false, 
+                XlSaveAsAccessMode.xlNoChange, 
+                XlSaveConflictResolution.xlLocalSessionChanges, 
+                Type.Missing, 
+                Type.Missing
+            );
 
             excelApp.Quit();
 

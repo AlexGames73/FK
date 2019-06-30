@@ -17,6 +17,7 @@ using System.Windows.Interop;
 using System.Timers;
 using Brushes = System.Windows.Media.Brushes;
 using System.Runtime.InteropServices;
+using System.Net.Mail;
 
 namespace fk
 {
@@ -30,6 +31,8 @@ namespace fk
         public ContextMenuWindow contextMenu;
         public static int rentSale = 0;
         public System.Windows.Forms.NotifyIcon ni;
+        public List<Apartment> apartments = new List<Apartment>();
+        public string ErrorMail { get; set; }
 
         public MainWindow()
         {
@@ -95,18 +98,26 @@ namespace fk
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            List<Apartment> apartments = new List<Apartment>();
+            Thread thread = new Thread(Parse);
+            thread.Start((true, "Ульяновск", new int[] { 2, 3 }, 1000000, 1500000, 10));
 
-            CianParser cianParser = new CianParser();
-            apartments.AddRange(cianParser.Parse(true, "Ульяновск", new int[] { 2, 3 }, 1000000, 1500000, 10));
-
-            new TableCreator().CreateTable(apartments);
 
             //AvitoParser avitoParser = new AvitoParser();
             //avitoParser.InputCityes();
             //avitoParser.Parsing();
 
             //apartments.AddRange(avitoParser.apartments);
+        }
+
+        public void Parse(object o)
+        {
+            var data = ((bool, string, int[], int, int, int))o;
+
+            apartments.Clear();
+            CianParser cianParser = new CianParser();
+            apartments.AddRange(cianParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6));
+
+            new TableCreator().CreateTable(apartments);
         }
 
         protected override void OnStateChanged(EventArgs e)
@@ -138,6 +149,23 @@ namespace fk
             if (listboxSaleRent.SelectedIndex == -1)
                 listboxSaleRent.SelectedIndex = rentSale;
             rentSale = listboxSaleRent.SelectedIndex;
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                new MailAddress(((TextBox)sender).Text);
+                Error_email.DataContext = new ErrorsContext() { ErrorEmail = "" };
+            }
+            catch (FormatException)
+            {
+                Error_email.DataContext = new ErrorsContext() { ErrorEmail = "Invalid email" };
+            }
+            catch (Exception)
+            {
+                Error_email.DataContext = new ErrorsContext() { ErrorEmail = "" };
+            }
         }
     }
 }

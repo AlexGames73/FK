@@ -79,11 +79,6 @@ namespace fk
             return document;
         }
 
-        public void Parsing()
-        {
-            
-        }
-
         public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page)
         {
             string ExtraInfo = isBuy ? prodam : sdam;
@@ -101,7 +96,13 @@ namespace fk
             string address = htmlDocument.DocumentNode.SelectNodes(".//span[@itemprop='streetAddress']")[0].InnerHtml;
             if (address.Split(',').Length < 3)
                 address = city + ", " + address;
-            return new Apartment(address, price, square, rooms);
+            return Apartment.Builder()
+                .SetAddress(address)
+                .SetSquare(square)
+                .SetPrice(price)
+                .SetRooms(rooms)
+                .SetDistrict(GetDistrict(address))
+                .Build();
         }
 
         public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
@@ -117,18 +118,6 @@ namespace fk
                 }
             }
             return apartments.ToArray();
-        }
-
-        public override string SetDistricts(string address)
-        {
-            HtmlDocument document = GetHtml(@"https://geocode-maps.yandex.ru/1.x/?geocode=" + address);
-            HtmlNodeCollection node = document.DocumentNode.SelectNodes(".//div[@id='collapsible26']");
-            string args = node[0].SelectNodes(".//div[@class='line']")[0].SelectNodes(".//span[@class='text']")[0].InnerHtml;
-            string arg1 = args.Split(' ')[0];
-            string arg2 = args.Split(' ')[1];
-            document = GetHtml(@"https://geocode-maps.yandex.ru/1.x/?geocode=" + arg1 + "%20" + arg2 + "&kind=district");
-            string district = document.DocumentNode.SelectNodes(".//div[@id='collapsible35']")[0].ChildNodes[0].ChildNodes[1].ChildNodes[3].ChildNodes[2].InnerHtml;
-            return district;
         }
     }
 }
