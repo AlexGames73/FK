@@ -39,7 +39,8 @@
         <TextBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
                  materialDesign:HintAssist.FloatingOffset="1,-20" Margin="10,102,10,0" 
                  materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Center" 
-                 VerticalAlignment="Top" Width="280" FontSize="20" Height="60" Background="{x:Null}" Padding="6,0,0,2">
+                 VerticalAlignment="Top" Width="280" FontSize="20" Height="60" Background="{x:Null}" Padding="6,0,0,2"
+                 TextChanged="TextBox_TextChanged">
             <materialDesign:HintAssist.Hint>
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
                     <materialDesign:PackIcon Kind="Account" Width="28" Height="28" />
@@ -47,5 +48,6 @@
                 </StackPanel>
             </materialDesign:HintAssist.Hint>
         </TextBox>
+        <TextBlock Name="Error_email" Text="{Binding ErrorEmail}" Margin="10,162,10,300" VerticalAlignment="Center" FontSize="15" Foreground="Red"/>
     </Grid>
 </Window>
