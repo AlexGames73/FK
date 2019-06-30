@@ -5,7 +5,7 @@ using System.Text;
 
 namespace fk
 {
-    class Apartment
+    public class Apartment
     {
         public string Address { get; set; }
         public string Price { get; set; }

@@ -51,8 +51,8 @@ namespace fk
             List<Apartment> res = new List<Apartment>();
 
             HtmlWeb web = new HtmlWeb();
-            web.UseCookies = true;
             web.CachePath = Directory.GetCurrentDirectory();
+            web.UsingCache = true;
             HtmlDocument document = web.Load(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh));
             var test = document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']");
             int totalCount = int.Parse(test[0].InnerText.Split(' ')[0]);

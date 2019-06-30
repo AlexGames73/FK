@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fk
 {
-    class ApartmentBuilder
+    public class ApartmentBuilder
     {
         private Apartment apartment;
 

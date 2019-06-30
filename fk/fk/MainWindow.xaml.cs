@@ -95,10 +95,12 @@ namespace fk
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //List<Apartment> apartments = new List<Apartment>();
+            List<Apartment> apartments = new List<Apartment>();
 
-            //CianParser cianParser = new CianParser();
-            //apartments.AddRange(cianParser.Parse(true, "Ульяновск", new int[] { 2, 3 }, 1000000, 1500000, 10));
+            CianParser cianParser = new CianParser();
+            apartments.AddRange(cianParser.Parse(true, "Ульяновск", new int[] { 2, 3 }, 1000000, 1500000, 10));
+
+            new TableCreator().CreateTable(apartments);
 
             //AvitoParser avitoParser = new AvitoParser();
             //avitoParser.InputCityes();
