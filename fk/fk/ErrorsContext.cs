@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace fk
 {
-    class ErrorsContext
+    public class ErrorsContext
     {
+        public const string EMAIL_ERROR = "Неправильный адрес электронной почты";
+
         public string ErrorEmail { get; set; }
+        public string ErrorDigit { get; set; }
+        public string MsgSubmit { get; set; }
     }
 }

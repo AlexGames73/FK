@@ -101,7 +101,9 @@ namespace fk
                 HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='description item_table-description']");
                 foreach (HtmlNode htmlNode in links)
                 {
-                    apartments.Add(GetApartment(htmlNode));
+                    try {
+                        apartments.Add(GetApartment(htmlNode));
+                    } catch (Exception) { }
                 }
             }
             return apartments.ToArray();

@@ -49,8 +49,8 @@ namespace fk
         public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
         {
             List<Apartment> res = new List<Apartment>();
-            HtmlWeb web = new HtmlWeb();
-            HtmlDocument document = web.Load(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh));
+            
+            HtmlDocument document = GetHtml(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh));
             var test = document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']");
             int totalCount = int.Parse(test[0].InnerText.Split(' ')[0]);
             int count = 0;
@@ -62,7 +62,7 @@ namespace fk
             }
             for (int i = 1; count < totalCount && i < pages; i++)
             {
-                document = web.Load(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh, i + 1));
+                document = GetHtml(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh, i + 1));
                 htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
                 foreach (HtmlNode node in htmlNodes)
                 {

@@ -28,13 +28,22 @@ namespace fk
     /// </summary>
     public partial class MainWindow : Window
     {
+        public const int PAGES = 2;
+
         public static MainWindow Instance;
 
-        public ContextMenuWindow contextMenu;
         public static int rentSale = 0;
+        public static string email = "";
+        public static string city = "Ульяновск";
+        public static string time = "00:00";
+        public static bool is2Room = false;
+        public static bool is3Room = false;
+        public static int priceBefore = 0;
+        public static int priceAfter = 1000000000;
+
+        public ContextMenuWindow contextMenu;
         public System.Windows.Forms.NotifyIcon ni;
         public List<Apartment> apartments = new List<Apartment>();
-        public string ErrorMail { get; set; }
 
         public MainWindow()
         {
@@ -100,15 +109,6 @@ namespace fk
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Thread thread = new Thread(Parse);
-            thread.Start((true, "Ульяновск", new int[] { 2, 3 }, 1000000, 1500000, 10));
-
-
-            //AvitoParser avitoParser = new AvitoParser();
-            //avitoParser.InputCityes();
-            //avitoParser.Parsing();
-
-            //apartments.AddRange(avitoParser.apartments);
         }
 
         public void Parse(object o)
@@ -116,11 +116,23 @@ namespace fk
             var data = ((bool, string, int[], int, int, int))o;
 
             apartments.Clear();
-            CianParser cianParser = new CianParser();
-            try { apartments.AddRange(cianParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); }
-            catch (Exception) { }
 
-            new TableCreator().CreateTable(apartments);
+            IParser cianParser = new CianParser();
+            IParser avitoParser = new AvitoParser();
+            IParser domofondParser = new DomofondParser();
+
+            Console.WriteLine("1 парсер");
+            try { apartments.AddRange(cianParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            Console.WriteLine("2 парсер");
+            try { apartments.AddRange(avitoParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            Console.WriteLine("3 парсер");
+            try { apartments.AddRange(domofondParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+
+            apartments.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
+
+            Console.WriteLine("Создание и отправка таблицы");
+            TableCreator.CreateTable(apartments);
+            EmailSender.Send(email);
         }
 
         protected override void OnStateChanged(EventArgs e)
@@ -156,18 +168,110 @@ namespace fk
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (!Validator.ValidateEmail(EmailInput.Text))
+            {
+                Error_email.DataContext = new ErrorsContext() { ErrorEmail = ErrorsContext.EMAIL_ERROR };
+                return;
+            }
+            Error_email.DataContext = new ErrorsContext() { ErrorEmail = "" };
+            email = EmailInput.Text;
+        }
+
+        private void ToggleButton2RoomsChecked(object sender, RoutedEventArgs e)
+        {
+            is2Room = true;
+        }
+
+        private void ToggleButton2RoomsUnchecked(object sender, RoutedEventArgs e)
+        {
+            is2Room = false;
+        }
+
+        private void ToggleButton3RoomsChecked(object sender, RoutedEventArgs e)
+        {
+            is3Room = true;
+        }
+
+        private void ToggleButton3RoomsUnchecked(object sender, RoutedEventArgs e)
+        {
+            is3Room = false;
+        }
+
+        private void Cities_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            city = (string)((ComboBoxItem)Cities_Selecter.SelectedValue).Content;
+        }
+
+        private void Time_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            time = (string)((ComboBoxItem)Time_Selecter.SelectedValue).Content;
+        }
+        private void PriceChanged(object sender, TextChangedEventArgs e)
+        {
             try
             {
-                new MailAddress(((TextBox)sender).Text);
-                Error_email.DataContext = new ErrorsContext() { ErrorEmail = "" };
+                if (((TextBox)sender).Text == "")
+                {
+                    ((TextBox)sender).Text = "0";
+                    ((TextBox)sender).CaretIndex = ((TextBox)sender).Text.Length;
+                }
+
+                if (((TextBox)sender).Text.Length > 11)
+                {
+                    DigitBeforeInput.Text = priceBefore.ToString();
+                    DigitAfterInput.Text = priceAfter.ToString();
+                    ((TextBox)sender).CaretIndex = ((TextBox)sender).Text.Length;
+                    return;
+                }
+
+                if (!Validator.ValidateDigit(DigitAfterInput.Text, 0, (int)1e9) ||
+                    !Validator.ValidateDigit(DigitBeforeInput.Text, 0, (int)1e9))
+                {
+                    DigitBeforeInput.Text = priceBefore.ToString();
+                    DigitAfterInput.Text = priceAfter.ToString();
+                    ((TextBox)sender).CaretIndex = ((TextBox)sender).Text.Length;
+                    return;
+                }
+                
+                if (int.Parse(DigitBeforeInput.Text) >= int.Parse(DigitAfterInput.Text))
+                {
+                    DigitBeforeInput.Text = priceBefore.ToString();
+                    DigitAfterInput.Text = priceAfter.ToString();
+                    ((TextBox)sender).CaretIndex = ((TextBox)sender).Text.Length;
+                    return;
+                }
+
+                priceBefore = int.Parse(DigitBeforeInput.Text);
+                priceAfter = int.Parse(DigitAfterInput.Text);
+                DigitBeforeInput.Text = priceBefore.ToString();
+                DigitAfterInput.Text = priceAfter.ToString();
+                ((TextBox)sender).CaretIndex = ((TextBox)sender).Text.Length;
             }
-            catch (FormatException)
+            catch (Exception) { }
+        }
+
+        private void ButtonSubmit(object sender, RoutedEventArgs e)
+        {
+            if (Error_email.Text != "" ||
+                EmailInput.Text == "" ||
+                (!is2Room && !is3Room))
             {
-                Error_email.DataContext = new ErrorsContext() { ErrorEmail = "Invalid email" };
+                Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Проверьте правильность фильтров" };
+                return;
             }
-            catch (Exception)
+
+            if (sender.Equals(SubmitSend))
             {
-                Error_email.DataContext = new ErrorsContext() { ErrorEmail = "" };
+                Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Ожидайте письма на почту в течении 20 минут" };
+                Thread thread = new Thread(Parse);
+                List<int> rooms = new List<int>();
+                if (is2Room) rooms.Add(2);
+                if (is3Room) rooms.Add(3);
+                thread.Start((rentSale == 0, city, rooms.ToArray(), priceBefore, priceAfter, PAGES));
+            }
+            else if (sender.Equals(SubmitSave))
+            {
+                Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Сохранение фильтров успешно! Письма будут приходить вам на почту в указаное время" };
             }
         }
     }

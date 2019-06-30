@@ -2,19 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Excel = Microsoft.Office.Interop.Excel;
 
 namespace fk
 {
     public class TableCreator
     {
-        int row = 1;
+        static int row = 1;
 
-        public void CreateTable(List<Apartment> apartments)
+        public static void CreateTable(List<Apartment> apartments)
         {
-            Excel.Application excelApp = new Excel.Application();
+            Application excelApp = new Application();
             excelApp.Workbooks.Add();
-            Excel.Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
+            Worksheet workSheet = (Worksheet)excelApp.ActiveSheet;
 
             workSheet.Cells[1, "A"] = "Адрес";
             workSheet.Cells[1, "B"] = "Цена";
@@ -40,12 +39,10 @@ namespace fk
             );
 
             excelApp.Quit();
-
         }
 
-        public void AddList(List<Apartment> apartments, Excel.Worksheet workSheet)
+        public static void AddList(List<Apartment> apartments, Worksheet workSheet)
         {
-
             foreach (Apartment ap in apartments)
             {
                 row++;

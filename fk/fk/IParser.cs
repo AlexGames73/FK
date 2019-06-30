@@ -48,8 +48,6 @@ namespace fk
             catch (Exception) { return "-"; }
         }
 
-
-
         public string LoadPage(string url)
         {
             var result = "";

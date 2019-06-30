@@ -101,7 +101,9 @@ namespace fk
             string info = htmlNode.SelectNodes(".//div[@class='long-item-card__informationHeaderRight___3bkKw']")[0].InnerText;
             string rooms = info.Split(',')[0].Split('-')[0];
             string square = info.Split(',')[1].Split(' ')[1];
-            string price = htmlNode.SelectNodes(".//div[@class='long-item-card__priceContainer___29DcY']")[0].InnerText;
+            string[] pricepieces = htmlNode.SelectNodes(".//div[@class='long-item-card__priceContainer___29DcY']")[0].InnerText.Split(' ');
+            pricepieces[pricepieces.Length - 1] = "";
+            string price = string.Join("", pricepieces);
             string address = htmlNode.SelectNodes(".//span[@class='long-item-card__address___PVI5p']")[0].InnerText;
             if (address.Split(',').Length < 4)
                 address = city + ", " + address;

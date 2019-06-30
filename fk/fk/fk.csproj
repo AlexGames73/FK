@@ -63,14 +63,15 @@
     <Compile Include="ContextMenuWindow.xaml.cs">
       <DependentUpon>ContextMenuWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EmailSender.cs" />
     <Compile Include="ErrorsContext.cs" />
     <Compile Include="DomofondParser.cs" />
     <Compile Include="Information.xaml.cs">
       <DependentUpon>Information.xaml</DependentUpon>
     </Compile>
     <Compile Include="MouseHelper.cs" />
-    <Compile Include="NetworkManager.cs" />
     <Compile Include="TableCreator.cs" />
+    <Compile Include="Validator.cs" />
     <Page Include="ContextMenuWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
