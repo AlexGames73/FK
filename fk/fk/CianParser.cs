@@ -116,8 +116,7 @@ namespace fk
                 }
             }
             res.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
-
-            SetDistricts(res, web);
+            
 
             web.Dispose();
 
@@ -140,6 +139,11 @@ namespace fk
             string Address = nodes[0].InnerText + ", " + nodes[nodes.Count - 2].InnerText + " " + nodes[nodes.Count - 1].InnerText;
 
             return new Apartment(Address, Price, Square, Rooms);
+        }
+
+        public override string SetDistricts(string address)
+        {
+            throw new NotImplementedException();
         }
     }
 }

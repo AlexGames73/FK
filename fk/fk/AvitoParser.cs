@@ -17,8 +17,6 @@ namespace fk
 
         public Dictionary<string, string> cityes;
 
-        public List<Apartment> apartments;
-
         public string prodam = "/kvartiry/prodam?cd=1";
 
         public string sdam = "/kvartiry/sdam?cd=1";
@@ -28,7 +26,6 @@ namespace fk
         public AvitoParser()
         {
             cityes = new Dictionary<string, string>();
-            apartments = new List<Apartment>();
         }
 
         public void InputCityes()
@@ -84,28 +81,7 @@ namespace fk
 
         public void Parsing()
         {
-            ChromeOptions options = new ChromeOptions();
-            //options.AddArgument("headless");
-            IWebDriver driver = new ChromeDriver(options);
-            for (int i = 0; i < 10; i++)
-            {
-                HtmlDocument document = GetHtml(GetURL(true, cityes[city], new int[2], 2, 3, i + 1));
-                HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='description item_table-description']");
-                foreach (HtmlNode htmlNode in links)
-                {
-                    string info = htmlNode.SelectNodes(".//span[@itemprop='name']")[0].InnerHtml;
-                    string rooms = info.Split(',')[0].Split('-')[0];
-                    string square = info.Split(',')[1].Split(' ')[1];
-                    string price = htmlNode.SelectNodes(".//span[@itemprop='price']")[0].GetAttributeValue("content", "");
-                    HtmlDocument htmlDocument = GetHtml(urlAvito + htmlNode.SelectNodes(".//a[@class='item-description-title-link']")[0].GetAttributeValue("href", ""));
-                    string address = htmlDocument.DocumentNode.SelectNodes(".//span[@itemprop='streetAddress']")[0].InnerHtml;
-                    if (address.Split(',').Length < 3)
-                        address = city + ", " + address;
-                    string district = GetDistrict(address, driver);
-                    apartments.Add(new Apartment(address, price, square, rooms, district));
-                }
-            }
-            driver.Dispose();
+            
         }
 
         public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page)
@@ -114,9 +90,45 @@ namespace fk
             return urlAvito + City + ExtraInfo + "?" + "p=" + page;
         }
 
+
+        public Apartment GetApartment(HtmlNode htmlNode)
+        {
+            string info = htmlNode.SelectNodes(".//span[@itemprop='name']")[0].InnerHtml;
+            string rooms = info.Split(',')[0].Split('-')[0];
+            string square = info.Split(',')[1].Split(' ')[1];
+            string price = htmlNode.SelectNodes(".//span[@itemprop='price']")[0].GetAttributeValue("content", "");
+            HtmlDocument htmlDocument = GetHtml(urlAvito + htmlNode.SelectNodes(".//a[@class='item-description-title-link']")[0].GetAttributeValue("href", ""));
+            string address = htmlDocument.DocumentNode.SelectNodes(".//span[@itemprop='streetAddress']")[0].InnerHtml;
+            if (address.Split(',').Length < 3)
+                address = city + ", " + address;
+            return new Apartment(address, price, square, rooms);
+        }
+
         public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
         {
-            throw new NotImplementedException();
+            List<Apartment> apartments = new List<Apartment>();
+            for (int i = 0; i < 10; i++)
+            {
+                HtmlDocument document = GetHtml(GetURL(true, cityes[city], new int[2], 2, 3, i + 1));
+                HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='description item_table-description']");
+                foreach (HtmlNode htmlNode in links)
+                {
+                    apartments.Add(GetApartment(htmlNode));
+                }
+            }
+            return apartments.ToArray();
+        }
+
+        public override string SetDistricts(string address)
+        {
+            HtmlDocument document = GetHtml(@"https://geocode-maps.yandex.ru/1.x/?geocode=" + address);
+            HtmlNodeCollection node = document.DocumentNode.SelectNodes(".//div[@id='collapsible26']");
+            string args = node[0].SelectNodes(".//div[@class='line']")[0].SelectNodes(".//span[@class='text']")[0].InnerHtml;
+            string arg1 = args.Split(' ')[0];
+            string arg2 = args.Split(' ')[1];
+            document = GetHtml(@"https://geocode-maps.yandex.ru/1.x/?geocode=" + arg1 + "%20" + arg2 + "&kind=district");
+            string district = document.DocumentNode.SelectNodes(".//div[@id='collapsible35']")[0].ChildNodes[0].ChildNodes[1].ChildNodes[3].ChildNodes[2].InnerHtml;
+            return district;
         }
     }
 }

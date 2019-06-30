@@ -19,41 +19,6 @@ namespace fk
             return Cities[City];
         }
 
-        public void SetDistricts(List<Apartment> apartments, IWebDriver driver)
-        {
-            driver.Url = "https://raionpoadresu.ru/";
-
-            driver.FindElement(By.XPath("//input[@id='address']")).SendKeys("Ульяновск, Северный венец 32");
-            driver.FindElement(By.XPath("//button[@id='getDistrictButton']")).Click();
-
-            while (driver.FindElements(By.XPath("//*[@id='result-district-element']/span")).Count == 0) { }
-
-            int i = 0;
-            foreach (Apartment apartment in apartments)
-            {
-                bool isNext = false;
-                while (!isNext)
-                {
-                    try
-                    {
-                        string previousDistrict = driver.FindElement(By.XPath("//*[@id='result-district-element']/span")).Text;
-
-                        driver.FindElement(By.XPath("//input[@id='address']")).Clear();
-                        driver.FindElement(By.XPath("//input[@id='address']")).SendKeys(apartment.Address);
-                        driver.FindElement(By.XPath("//button[@id='getDistrictButton']")).Click();
-
-                        var elem = driver.FindElements(By.XPath("//*[@id='result-district-element']/span"));
-                        while (elem[0].Text == previousDistrict)
-                            elem = driver.FindElements(By.XPath("//*[@id='result-district-element']/span"));
-
-                        apartment.District = elem[0].Text;
-                        isNext = true;
-                        Console.WriteLine(i);
-                    }
-                    catch (Exception) { }
-                }
-                i++;
-            }
-        }
+        public abstract string SetDistricts(string address);
     }
 }
