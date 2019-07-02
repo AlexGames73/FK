@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.Shell;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,38 @@ namespace fk
     /// <summary>
     /// Логика взаимодействия для App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, ISingleInstanceApp
     {
+        // TODO: Make this unique!
+        private const string Unique = "Change this to something that uniquely identifies your program.";
 
+        [STAThread]
+        public static void Main()
+        {
+            if (SingleInstance<App>.InitializeAsFirstInstance(Unique))
+            {
+                var application = new App();
+                application.InitializeComponent();
+                application.Run();
+
+                // Allow single instance code to perform cleanup operations
+                SingleInstance<App>.Cleanup();
+            }
+        }
+
+        #region ISingleInstanceApp Members
+        public bool SignalExternalCommandLineArgs(IList<string> args)
+        {
+            // Bring window to foreground
+            if (MainWindow.WindowState == WindowState.Minimized)
+            {
+                MainWindow.WindowState = WindowState.Normal;
+            }
+
+            MainWindow.Activate();
+
+            return true;
+        }
+        #endregion
     }
 }

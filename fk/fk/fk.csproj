@@ -39,11 +39,15 @@
   <PropertyGroup>
     <ApplicationIcon>home.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>fk.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -56,28 +60,19 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="ContextMenuWindow.xaml.cs">
-      <DependentUpon>ContextMenuWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PanelAds.xaml.cs">
-      <DependentUpon>PanelAds.xaml</DependentUpon>
-    </Compile>
+    </Page>
     <Compile Include="Utils\EmailSender.cs" />
     <Compile Include="Utils\ErrorsContext.cs" />
     <Compile Include="Services\DomofondParser.cs" />
     <Compile Include="Information.xaml.cs">
       <DependentUpon>Information.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\SingleInstance.cs" />
     <Compile Include="Utils\TableCreator.cs" />
     <Compile Include="Utils\Validator.cs" />
-    <Page Include="ContextMenuWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Information.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

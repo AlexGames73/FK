@@ -20,6 +20,12 @@ using System.Runtime.InteropServices;
 using System.Net.Mail;
 using HtmlAgilityPack;
 using System.Net;
+using System.Windows.Forms;
+using Application = System.Windows.Application;
+using ContextMenu = System.Windows.Controls.ContextMenu;
+using MessageBox = System.Windows.Forms.MessageBox;
+using TextBox = System.Windows.Controls.TextBox;
+using System.ComponentModel;
 
 namespace fk
 {
@@ -41,8 +47,7 @@ namespace fk
         public static int priceBefore = 0;
         public static int priceAfter = 1000000000;
 
-        public ContextMenuWindow contextMenu;
-        public System.Windows.Forms.NotifyIcon ni;
+        public NotifyIcon ni;
         public List<Apartment> apartments = new List<Apartment>();
 
         public MainWindow()
@@ -52,24 +57,52 @@ namespace fk
             Left = SystemParameters.PrimaryScreenWidth - Width - 10;
             Top = SystemParameters.PrimaryScreenHeight - Height - 50;
 
-            ni = new System.Windows.Forms.NotifyIcon();
+            ni = new NotifyIcon();
             ni.Icon = new Icon(Application.GetResourceStream(new Uri("pack://application:,,,/home.ico", UriKind.RelativeOrAbsolute)).Stream);
-            ni.Visible = true;
             ni.MouseClick += Ni_MouseClick;
-
-            contextMenu = new ContextMenuWindow();
+            Closing += OnClosing;
+            Topmost = true;
             Instance = this;
         }
 
         private void Ni_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
-                if (WindowState == WindowState.Minimized)
-                    OpenWindow();
-                else
-                    WindowState = WindowState.Minimized;
+                WindowState = WindowState.Normal;
+                ni.Visible = false;
             }
+            if (e.Button == MouseButtons.Right)
+            {
+                ContextMenu menu = (ContextMenu)FindResource("NotifierContextMenu");
+                menu.IsOpen = true;
+            }
+        }
+
+        private void OnClosing(object sender, CancelEventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+                ni.Dispose();
+            else
+            {
+                HideWindow();
+                e.Cancel = true;
+            }
+        }
+
+        private void Menu_Open(object sender, RoutedEventArgs e)
+        {
+            OpenWindow();
+        }
+
+        private void Menu_Close(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void Menu_About(object sender, RoutedEventArgs e)
+        {
+            new Information();
         }
 
         public void OpenWindow()
@@ -104,10 +137,6 @@ namespace fk
             return IntPtr.Zero;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
-
         public void Parse(object o)
         {
             var data = ((bool, string, int[], int, int, int))o;
@@ -134,25 +163,15 @@ namespace fk
         protected override void OnStateChanged(EventArgs e)
         {
             if (WindowState == WindowState.Minimized)
-                Hide();
-
-            base.OnStateChanged(e);
-        }
-
-        private void OnMinimiseWindow(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void Grid_MouseLeave(object sender, MouseEventArgs e)
-        {
-            contextMenu.Hide();
-        }
-
-        private void ButtonInfoClick(object sender, RoutedEventArgs e)
-        {
-            if (!Information.isOpened)
-                new Information();
+            {
+                ShowInTaskbar = false;
+                ni.Visible = true;
+            }
+            else if (WindowState == WindowState.Normal)
+            {
+                ni.Visible = false;
+                ShowInTaskbar = true;
+            }
         }
 
         private void ListboxSaleRent_SelectionChanged(object sender, SelectionChangedEventArgs e)

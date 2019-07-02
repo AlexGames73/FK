@@ -5,9 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:fk"
         mc:Ignorable="d"
-        WindowStyle="None"
-        AllowsTransparency="True"
-        Title="OnlySingle" Height="300" Width="250" Icon="home.ico"
+        Title="О программе" Height="300" Width="250" Icon="home.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -17,43 +15,25 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}" 
         WindowStartupLocation="CenterScreen"
-        ShowInTaskbar="False">
+        ShowInTaskbar="False" ResizeMode="NoResize" Topmost="True">
     <Grid Background="LightGray">
-        <Border BorderBrush="#FF5FA6F8" BorderThickness="0,0,0,2" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="250">
-            <Grid>
-                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                    BorderBrush="{x:Null}" Width="30" Height="30" HorizontalContentAlignment="Center" HorizontalAlignment="Right" Background="{x:Null}" Foreground="#E5FF0000" Margin="0,0,4,0"
-                        Click="ButtonCloseClick">
-                    <materialDesign:PackIcon Kind="Close" Height="20" Width="20" Foreground="#FFA01414" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Button>
-                <TextBlock Margin="4" HorizontalAlignment="Left" TextWrapping="Wrap" Text="О программе" VerticalAlignment="Center" FontSize="22" Foreground="#FFA2A2A2"/>
-            </Grid>
-        </Border>
-        <TextBlock HorizontalAlignment="Left" Height="245" Margin="10,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="230">
-            <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                 <FlowDocument FontSize="13"
-                               FontFamily="Roboto" 
-                               Foreground="Black" 
-                               PagePadding="0">
-                     <Paragraph TextIndent="20" 
-                                Margin="5,0,5,10">
-                         Наше приложение "Фильтр квартир" облегчает поиск квартир для покупки и съема в 15-ти крупнейших городах России.
-                     </Paragraph>
-                     <Paragraph TextIndent="20" 
-                                Margin="5,0,5,10">
-                         "Фильтр квартир" анализирует три большие базы недвижимости (Avito, Youla и Cian) и отправляет Вам варианты по индивидуальным параметрам.
-                     </Paragraph>
-                     <Paragraph TextIndent="20" 
-                                Margin="5,0,5,10">
-                         ОТПРАВИТЬ - отправить письмо с предложениями прямо сейчас.
-                     </Paragraph>
-                     <Paragraph TextIndent="20" 
-                                Margin="5,0,5,10">
-                         СОХРАНИТЬ - сохранить изменения и включить рассылку.
-                     </Paragraph>
-                 </FlowDocument>
-            </FlowDocumentScrollViewer>
-        </TextBlock>
+        <TextBlock HorizontalAlignment="Left" Height="249" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="222"><InlineUIContainer>
+                <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <FlowDocument FontSize="13"
+                        FontFamily="Roboto" 
+                        Foreground="Black" 
+                        PagePadding="0">
+                        <Paragraph TextIndent="20" 
+                            Margin="5,0,5,10"><Run Text="Наше приложение &quot;Фильтр квартир&quot; облегчает поиск квартир для покупки и съема в 15-ти крупнейших городах России."/></Paragraph>
+                        <Paragraph TextIndent="20" 
+                            Margin="5,0,5,10"><Run Text="&quot;Фильтр квартир&quot; анализирует три большие базы недвижимости (Avito, Youla и Cian) и отправляет Вам варианты по индивидуальным параметрам."/></Paragraph>
+                        <Paragraph TextIndent="20" 
+                            Margin="5,0,5,10"><Run Text="ОТПРАВИТЬ - отправить письмо с предложениями прямо сейчас."/></Paragraph>
+                        <Paragraph TextIndent="20" 
+                            Margin="5,0,5,10"><Run Text="СОХРАНИТЬ - сохранить изменения и включить рассылку."/></Paragraph>
+                    </FlowDocument>
+                </FlowDocumentScrollViewer>
+            </InlineUIContainer></TextBlock>
     </Grid>
 </Window>
