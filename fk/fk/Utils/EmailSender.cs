@@ -11,23 +11,23 @@ namespace fk
 {
     public class EmailSender
     {
-        public static void Send(string emailAddress)
+        public static void Send(string emailAddress, byte[] message)
         {
             MailAddress From = new MailAddress("filter.kvartir@yandex.ru", "Фильтр Квартир");
             MailAddress To = new MailAddress(emailAddress);
-            MailMessage message = new MailMessage(From, To);
-            message.Subject = "Рассылка от приложения \"Фильтр квартир\" ";
-            message.Body = "Здравствуйте! Самые свежие предложения квартир с популярных сайтов уже собраны для Вас! Хорошего дня!  ";
+            MailMessage Message = new MailMessage(From, To);
+            Message.Subject = "Рассылка от приложения \"Фильтр квартир\" ";
+            Message.Body = "Здравствуйте! Самые свежие предложения квартир с популярных сайтов уже собраны для Вас! Хорошего дня!  ";
 
             bool isNext = false;
             while (!isNext)
             {
                 try {
-                    message.Attachments.Add(new Attachment(Directory.GetCurrentDirectory() + "/table.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+                    Message.Attachments.Add(new Attachment(new MemoryStream(message), "Список квартир.xlsx"));
                     isNext = true;
                 } catch (Exception) { }
             }
-            message.IsBodyHtml = false;
+            Message.IsBodyHtml = false;
 
             string smtpHost = "smtp.yandex.ru";
             int smtpPort = 587;
@@ -39,7 +39,7 @@ namespace fk
             client.Credentials = new NetworkCredential(login, password);
 
             client.EnableSsl = true;
-            client.SendMailAsync(message);
+            client.SendMailAsync(Message);
         }
     }
 }

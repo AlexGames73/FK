@@ -33,11 +33,11 @@ namespace fk
         public static MainWindow Instance;
 
         public static int rentSale = 0;
-        public static string email = "";
+        public static string email = "permenev.alex@ya.ru";
         public static string city = "Ульяновск";
         public static string time = "00:00";
-        public static bool is2Room = false;
-        public static bool is3Room = false;
+        public static bool is2Room = true;
+        public static bool is3Room = true;
         public static int priceBefore = 0;
         public static int priceAfter = 1000000000;
 
@@ -49,7 +49,6 @@ namespace fk
         {
             InitializeComponent();
 
-            Title = App.TITLE;
             Left = SystemParameters.PrimaryScreenWidth - Width - 10;
             Top = SystemParameters.PrimaryScreenHeight - Height - 50;
 
@@ -64,9 +63,7 @@ namespace fk
 
         private void Ni_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
-                contextMenu.OpenMenu();
-            else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
                 if (WindowState == WindowState.Minimized)
                     OpenWindow();
@@ -131,8 +128,7 @@ namespace fk
             apartments.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
 
             Console.WriteLine("Создание и отправка таблицы");
-            TableCreator.CreateTable(apartments);
-            EmailSender.Send(email);
+            EmailSender.Send(email, TableCreator.CreateTable(apartments));
         }
 
         protected override void OnStateChanged(EventArgs e)

@@ -1,4 +1,6 @@
 ﻿using HtmlAgilityPack;
+using Nominatim.API.Geocoders;
+using Nominatim.API.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
@@ -15,37 +17,18 @@ namespace fk
 {
     abstract class IParser
     {
-        public Dictionary<string, string> Cities { get; set; }
+        private Dictionary<string, string> Cities = new Dictionary<string, string>();
 
         public abstract string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1);
         public abstract Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1);
-        public string GetRegion(string City) {
-            return Cities[City];
+
+        public void AddCity(string city, string citycode)
+        {
+            Cities.Add(city, citycode);
         }
 
-        public string GetDistrict(string address)
-        {
-            string url = "https://geocode-maps.yandex.ru/1.x/?kind=district&format=json&geocode=";
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            WebClient web = new WebClient();
-            try
-            {
-                dynamic sdsa = serializer.Deserialize<dynamic>(Encoding.UTF8.GetString(web.DownloadData(url + address)));
-                string nextURL = sdsa["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["Point"]["pos"];
-                sdsa = serializer.Deserialize<dynamic>(Encoding.UTF8.GetString(web.DownloadData(url + nextURL)));
-                sdsa = sdsa["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["Address"]["Components"];
-                var district = "-";
-                for (int i = sdsa.Length - 1; i >= 0; i--)
-                {
-                    if (sdsa[i]["kind"] == "district")
-                    {
-                        district = sdsa[i]["name"];
-                        break;
-                    }
-                }
-                return district;
-            }
-            catch (Exception) { return "-"; }
+        public string GetRegion(string City) {
+            return Cities[City];
         }
 
         public string LoadPage(string url)

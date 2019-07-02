@@ -17,22 +17,21 @@ namespace fk
     {
         public CianParser()
         {
-            Cities = new Dictionary<string, string>();
-            Cities.Add("Москва", "1");
-            Cities.Add("Санкт-Петербург", "2");
-            Cities.Add("Новосибирск", "4897");
-            Cities.Add("Екатеринбург", "4743");
-            Cities.Add("Нижний Новгород", "4885");
-            Cities.Add("Казань", "4777");
-            Cities.Add("Самара", "4966");
-            Cities.Add("Челябинск", "5048");
-            Cities.Add("Омск", "5016");
-            Cities.Add("Ростов-на-Дону", "4959");
-            Cities.Add("Уфа", "176245");
-            Cities.Add("Красноярск", "4827");
-            Cities.Add("Пермь", "4927");
-            Cities.Add("Волгоград", "4704");
-            Cities.Add("Ульяновск", "5027");
+            AddCity("Москва", "1");
+            AddCity("Санкт-Петербург", "2");
+            AddCity("Новосибирск", "4897");
+            AddCity("Екатеринбург", "4743");
+            AddCity("Нижний Новгород", "4885");
+            AddCity("Казань", "4777");
+            AddCity("Самара", "4966");
+            AddCity("Челябинск", "5048");
+            AddCity("Омск", "5016");
+            AddCity("Ростов-на-Дону", "4959");
+            AddCity("Уфа", "176245");
+            AddCity("Красноярск", "4827");
+            AddCity("Пермь", "4927");
+            AddCity("Волгоград", "4704");
+            AddCity("Ульяновск", "5027");
         }
 
         public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
@@ -77,22 +76,19 @@ namespace fk
         public Apartment Parse(HtmlNode node)
         {
             string[] title = node.SelectSingleNode(".//*[@class='c6e8ba5398--title--2CW78']").InnerText.Split(',');
-            string Rooms = title[0][0].ToString();
-            string Square = title[1].Trim().Split(' ')[0];
-            List<string> price = new List<string>(node.SelectSingleNode(".//*[@class='c6e8ba5398--header--1df-X']").InnerText.Split(' '));
-            price.RemoveAt(price.Count - 1);
-            string Price = string.Join("", price.ToArray());
-            Console.WriteLine(Price);
-            HtmlNodeCollection nodes = node.SelectNodes(".//div[@class='c6e8ba5398--address-links--1pHHO']/div");
-            string Address = nodes[0].InnerText + ", " + nodes[nodes.Count - 2].InnerText + " " + nodes[nodes.Count - 1].InnerText;
-            string District = GetDistrict(Address);
-            return Apartment.Builder()
-                .SetAddress(Address)
-                .SetPrice(Price)
-                .SetSquare(Square)
-                .SetRooms(Rooms)
-                .SetDistrict(District)
-                .Build();
+            string rooms = title[0][0].ToString();
+            string square = title[1].Trim().Split(' ')[0];
+            List<string> prices = new List<string>(node.SelectSingleNode(".//*[@class='c6e8ba5398--header--1df-X']").InnerText.Split(' '));
+            prices.RemoveAt(prices.Count - 1);
+            string price = string.Join("", prices.ToArray());
+            string address = node.SelectSingleNode("//*[@class='c6e8ba5398--address-links--1pHHO']/span").GetAttributeValue("content", "-");
+            return new Apartment
+            {
+                Address = address,
+                Price = price,
+                Rooms = rooms,
+                Square = square
+            };
         }
     }
 }

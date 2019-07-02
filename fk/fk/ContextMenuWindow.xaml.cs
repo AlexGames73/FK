@@ -36,22 +36,6 @@ namespace fk
             App.Current.Shutdown();
         }
 
-        public void OpenMenu()
-        {
-            System.Drawing.Point cursorPos;
-            int dirX = 0;
-            int dirY = 0;
-            if (MouseHelper.GetCursorPos(out cursorPos))
-            {
-                Console.WriteLine(cursorPos);
-                if ((SystemParameters.PrimaryScreenHeight - cursorPos.Y) < Height - 50) dirY = 1;
-                if ((SystemParameters.PrimaryScreenWidth - cursorPos.X) < Width) dirX = 1;
-                Left = cursorPos.X - Width * dirX;
-                Top = cursorPos.Y - Height * dirY;
-            }
-            Show();
-        }
-
         private void ButtonOpenAppClick(object sender, RoutedEventArgs e)
         {
             MainWindow.Instance.OpenWindow();

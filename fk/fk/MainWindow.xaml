@@ -131,7 +131,7 @@
                  materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Center" 
                  VerticalAlignment="Top" Width="138" FontSize="14" Height="41" Background="{x:Null}" 
                  Padding="6,0,0,2" TextChanged="PriceChanged" Name="DigitAfterInput"
-                 Text="1000000">
+                 Text="10000000">
             <materialDesign:HintAssist.Hint>
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
                     <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Цена до:</TextBlock>

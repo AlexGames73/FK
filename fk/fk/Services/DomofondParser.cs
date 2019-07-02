@@ -11,39 +11,27 @@ namespace fk
     {
         public string MainUrl = @"https://www.domofond.ru";
 
-        public Dictionary<string, string> cityes;
-
         public string prodam = "/prodazha-kvartiry-";
 
         public string sdam = "/arenda-kvartiry-";
 
-        public string city = "";
-
         public DomofondParser()
         {
-            cityes = new Dictionary<string, string>();
-            cityes = InputCityes();
-        }
-
-        public Dictionary<string, string> InputCityes()
-        {
-            Dictionary<string, string> inputCityes = new Dictionary<string, string>();
-            inputCityes.Add("Москва", "moskva-c3584");
-            inputCityes.Add("Санкт-Петербург", "sankt_peterburg-c3414");
-            inputCityes.Add("Новосибирск", "novosibirsk-c3285");
-            inputCityes.Add("Екатеринбург ", "ekaterinburg-c2653");
-            inputCityes.Add("Нижний Новгород", "nizhniy_novgorod-c1023");
-            inputCityes.Add("Казань", "kazan-c1330");
-            inputCityes.Add("Самара", "samara-c2415");
-            inputCityes.Add("Челябинск", "chelyabinsk-c2358");
-            inputCityes.Add("Омск", "omsk-c1406");
-            inputCityes.Add("Ростов-на-Дону", "rostov_na_donu-c1759");
-            inputCityes.Add("Уфа", "ufa-c1514");
-            inputCityes.Add("Красноярск", "krasnoyarsk-c3174");
-            inputCityes.Add("Пермь", "perm-c1667");
-            inputCityes.Add("Волгоград", "volgograd-c400");
-            inputCityes.Add("Ульяновск", "ulyanovsk-c2181");
-            return inputCityes;
+            AddCity("Москва", "moskva-c3584");
+            AddCity("Санкт-Петербург", "sankt_peterburg-c3414");
+            AddCity("Новосибирск", "novosibirsk-c3285");
+            AddCity("Екатеринбург ", "ekaterinburg-c2653");
+            AddCity("Нижний Новгород", "nizhniy_novgorod-c1023");
+            AddCity("Казань", "kazan-c1330");
+            AddCity("Самара", "samara-c2415");
+            AddCity("Челябинск", "chelyabinsk-c2358");
+            AddCity("Омск", "omsk-c1406");
+            AddCity("Ростов-на-Дону", "rostov_na_donu-c1759");
+            AddCity("Уфа", "ufa-c1514");
+            AddCity("Красноярск", "krasnoyarsk-c3174");
+            AddCity("Пермь", "perm-c1667");
+            AddCity("Волгоград", "volgograd-c400");
+            AddCity("Ульяновск", "ulyanovsk-c2181");
         }
 
         public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
@@ -62,15 +50,13 @@ namespace fk
                 roomsCountUrl += wordCount + "%2C";
             }
             string priceUrl = $"PriceFrom={PriceLow}&PriceTo={PriceHigh}&";
-            string a = MainUrl + ExtraInfo + City + "?" + priceUrl + roomsCountUrl + "&Page=" + page;
             return MainUrl + ExtraInfo + City + "?" + priceUrl + roomsCountUrl + "&Page=" + page;
         }
 
         public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
         {
             List<Apartment> apartments = new List<Apartment>();
-            city = City;
-            HtmlDocument MainPage = GetHtml(GetURL(true, cityes[City], RoomsCount, PriceLow, PriceHigh, 1));
+            HtmlDocument MainPage = GetHtml(GetURL(true, GetRegion(City), RoomsCount, PriceLow, PriceHigh, 1));
             HtmlNodeCollection documentPages = MainPage.DocumentNode.SelectNodes(".//ul[@class='pagination__mainPages___2v12k']");
             if (documentPages != null)
             {
@@ -79,7 +65,7 @@ namespace fk
             }
             for (int i = 0; i < pages; i++)
             {
-                HtmlDocument document = GetHtml(GetURL(true, cityes[City], RoomsCount, PriceLow, PriceHigh, i + 1));
+                HtmlDocument document = GetHtml(GetURL(true, GetRegion(City), RoomsCount, PriceLow, PriceHigh, i + 1));
                 HtmlNodeCollection extraLinks = document.DocumentNode.SelectNodes(".//a[@class='long-item-card__item___ubItG']");
                 foreach (HtmlNode htmlNode in extraLinks)
                 {
@@ -105,16 +91,13 @@ namespace fk
             pricepieces[pricepieces.Length - 1] = "";
             string price = string.Join("", pricepieces);
             string address = htmlNode.SelectNodes(".//span[@class='long-item-card__address___PVI5p']")[0].InnerText;
-            if (address.Split(',').Length < 4)
-                address = city + ", " + address;
-            string district = GetDistrict(address);
-            return Apartment.Builder()
-                .SetAddress(address)
-                .SetDistrict(district)
-                .SetPrice(price)
-                .SetRooms(rooms)
-                .SetSquare(square)
-                .Build();
+            return new Apartment
+            {
+                Address = address,
+                Price = price,
+                Rooms = rooms,
+                Square = square
+            };
         }
     }
 }
