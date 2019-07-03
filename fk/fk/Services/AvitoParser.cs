@@ -62,7 +62,7 @@ namespace fk.Services
             };
         }
 
-        public override Apartment[] Parse(PanelAds panelAds, bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
+        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1, PanelAds panelAds = null)
         {
             List<Apartment> apartments = new List<Apartment>();
             HtmlDocument MainPage = GetHtml(GetURL(true, GetRegion(City), RoomsCount, PriceLow, PriceHigh, 1));
@@ -81,7 +81,7 @@ namespace fk.Services
                         Apartment apartment = GetApartment(htmlNode);
                         apartments.Add(apartment);
                         panelAds.AddToQueue(apartment);
-                    } catch (Exception) { }
+                    } catch { }
                 }
             }
             return apartments.ToArray();

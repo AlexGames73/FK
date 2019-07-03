@@ -54,7 +54,7 @@ namespace fk.Services
             return MainUrl + ExtraInfo + City + "?" + priceUrl + roomsCountUrl + "&Page=" + page;
         }
 
-        public override Apartment[] Parse(PanelAds panelAds, bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
+        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1, PanelAds panelAds = null)
         {
             List<Apartment> apartments = new List<Apartment>();
             HtmlDocument MainPage = GetHtml(GetURL(true, GetRegion(City), RoomsCount, PriceLow, PriceHigh, 1));
@@ -70,16 +70,24 @@ namespace fk.Services
                 HtmlNodeCollection extraLinks = document.DocumentNode.SelectNodes(".//a[@class='long-item-card__item___ubItG']");
                 foreach (HtmlNode htmlNode in extraLinks)
                 {
-                    Apartment apartment = GetApartment(htmlNode);
-                    apartments.Add(apartment);
-                    panelAds.AddToQueue(apartment);
+                    try
+                    {
+                        Apartment apartment = GetApartment(htmlNode);
+                        apartments.Add(apartment);
+                        panelAds.AddToQueue(apartment);
+                    }
+                    catch { }
                 }
                 HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//a[@class='long-item-card__item___ubItG search-results__itemCardNotFirst___3fei6']");
                 foreach (HtmlNode htmlNode in links)
                 {
-                    Apartment apartment = GetApartment(htmlNode);
-                    apartments.Add(apartment);
-                    panelAds.AddToQueue(apartment);
+                    try
+                    {
+                        Apartment apartment = GetApartment(htmlNode);
+                        apartments.Add(apartment);
+                        panelAds.AddToQueue(apartment);
+                    }
+                    catch { }
                 }
             }
             return apartments.ToArray();

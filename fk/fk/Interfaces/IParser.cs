@@ -21,7 +21,7 @@ namespace fk
         private Dictionary<string, string> Cities = new Dictionary<string, string>();
 
         public abstract string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1);
-        public abstract Apartment[] Parse(PanelAds panelAds, bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1);
+        public abstract Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1, PanelAds panelAds = null);
 
         public void AddCity(string city, string citycode)
         {

@@ -14,6 +14,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using fk.Models;
+using System.Collections.ObjectModel;
 
 namespace fk
 {
@@ -23,13 +25,15 @@ namespace fk
     public partial class PanelAds : Window
     {
         public  Queue<Apartment> queueApartments = new Queue<Apartment>();
-        List<Apartment> apartments = new List<Apartment>();
+        ObservableCollection<Apartment> apartments = new ObservableCollection<Apartment>();
         
         public PanelAds()
         {
             InitializeComponent();
             Show();
-            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new ThreadStart(delegate { LoadAds(); }));
+            Thread thread = new Thread(LoadAds);
+            thread.Start();
+            contentAds.ItemsSource = apartments;
         }
 
         public void LoadAds()
@@ -38,7 +42,7 @@ namespace fk
             {
                 if (queueApartments.Count > 0)
                 {
-                    InitAd(queueApartments.Dequeue());
+                    Dispatcher.Invoke(() => { InitAd(queueApartments.Dequeue()); });
                 }
             }
         }
@@ -51,7 +55,6 @@ namespace fk
         public void InitAd(Apartment apartment)
         {
             apartments.Add(apartment);
-            contentAds.ItemsSource = apartments;
         }
     }
 }

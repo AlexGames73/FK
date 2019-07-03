@@ -116,7 +116,30 @@ namespace fk
             WindowState = WindowState.Minimized;
         }
 
-        public void Parse(object o)
+        public void ParseSend(object o)
+        {
+            var data = ((bool, string, int[], int, int, int))o;
+
+            apartments.Clear();
+
+            IParser cianParser = new CianParser();
+            IParser avitoParser = new AvitoParser();
+            IParser domofondParser = new DomofondParser();
+
+            Console.WriteLine("1 парсер");
+            try { apartments.AddRange(cianParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            Console.WriteLine("2 парсер");
+            try { apartments.AddRange(avitoParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            Console.WriteLine("3 парсер");
+            try { apartments.AddRange(domofondParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+
+            apartments.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
+            
+                Console.WriteLine("Создание и отправка таблицы");
+                EmailSender.Send(email, TableCreator.CreateTable(apartments));
+        }
+
+        public void ParseFind(object o)
         {
             var data = ((bool, string, int[], int, int, int, PanelAds))o;
 
@@ -127,16 +150,13 @@ namespace fk
             IParser domofondParser = new DomofondParser();
 
             Console.WriteLine("1 парсер");
-            try { apartments.AddRange(cianParser.Parse(data.Item7, data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            try { apartments.AddRange(cianParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6, data.Item7)); } catch (Exception) { }
             Console.WriteLine("2 парсер");
-            try { apartments.AddRange(avitoParser.Parse(data.Item7, data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            try { apartments.AddRange(avitoParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6, data.Item7)); } catch (Exception) { }
             Console.WriteLine("3 парсер");
-            try { apartments.AddRange(domofondParser.Parse(data.Item7, data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            try { apartments.AddRange(domofondParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6, data.Item7)); } catch (Exception) { }
 
             apartments.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
-
-            Console.WriteLine("Создание и отправка таблицы");
-            EmailSender.Send(email, TableCreator.CreateTable(apartments));
         }
 
         protected override void OnStateChanged(EventArgs e)
@@ -216,13 +236,12 @@ namespace fk
 
             if (sender.Equals(SubmitSend))
             {
-                PanelAds panelAds = new PanelAds();
                 Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Ожидайте письма на почту в течении 20 минут" };
-                Thread thread = new Thread(Parse);
+                Thread thread = new Thread(ParseSend);
                 List<int> rooms = new List<int>();
                 if (is2Room) rooms.Add(2);
                 if (is3Room) rooms.Add(3);
-                thread.Start((rentSale == 0, city, rooms.ToArray(), priceBefore, priceAfter, PAGES, panelAds));
+                thread.Start((rentSale == 0, city, rooms.ToArray(), priceBefore, priceAfter, PAGES));
             }
             else if (sender.Equals(SubmitSave))
             {
@@ -231,6 +250,12 @@ namespace fk
             else if (sender.Equals(SubmitFind))
             {
                 Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Объявления загружаются..." };
+                PanelAds panelAds = new PanelAds();
+                Thread thread = new Thread(ParseFind);
+                List<int> rooms = new List<int>();
+                if (is2Room) rooms.Add(2);
+                if (is3Room) rooms.Add(3);
+                thread.Start((rentSale == 0, city, rooms.ToArray(), priceBefore, priceAfter, PAGES, panelAds));
             }
         }
     }

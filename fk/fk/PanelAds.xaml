@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:fk"
+        xmlns:models="clr-namespace:fk.Models"
         WindowStyle="ToolWindow"
         Title="Объявления" Height="450" Width="700" Icon="home.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -21,7 +22,7 @@
         <ScrollViewer HorizontalAlignment="Left" Height="400" Margin="10,10,0,0" VerticalAlignment="Top" Width="674">
             <ListBox x:Name="contentAds">
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type local:Apartment}">
+                    <DataTemplate DataType="{x:Type models:Apartment}">
                         <materialDesign:Card>
                             <StackPanel Orientation="Horizontal">
                                 <Image Height="100" Width="100" HorizontalAlignment="Left" Margin="10"></Image>
