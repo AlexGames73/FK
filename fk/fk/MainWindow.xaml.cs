@@ -15,7 +15,6 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Interop;
 using System.Timers;
-using Brushes = System.Windows.Media.Brushes;
 using System.Runtime.InteropServices;
 using System.Net.Mail;
 using HtmlAgilityPack;
@@ -23,9 +22,10 @@ using System.Net;
 using System.Windows.Forms;
 using Application = System.Windows.Application;
 using ContextMenu = System.Windows.Controls.ContextMenu;
-using MessageBox = System.Windows.Forms.MessageBox;
-using TextBox = System.Windows.Controls.TextBox;
 using System.ComponentModel;
+using fk.Utils;
+using fk.Services;
+using fk.Models;
 
 namespace fk
 {
@@ -116,27 +116,6 @@ namespace fk
             WindowState = WindowState.Minimized;
         }
 
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-
-            var hwndSource = PresentationSource.FromVisual(this) as HwndSource;
-            if (hwndSource != null)
-                hwndSource.AddHook(WndProc);
-        }
-
-        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            if (msg == 0x3000)
-            {
-                Show();
-                WindowState = WindowState.Normal;
-                Activate();
-            }
-
-            return IntPtr.Zero;
-        }
-
         public void Parse(object o)
         {
             var data = ((bool, string, int[], int, int, int))o;
@@ -181,17 +160,6 @@ namespace fk
             rentSale = listboxSaleRent.SelectedIndex;
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!Validator.ValidateEmail(EmailInput.Text))
-            {
-                Error_email.DataContext = new ErrorsContext() { ErrorEmail = ErrorsContext.EMAIL_ERROR };
-                return;
-            }
-            Error_email.DataContext = new ErrorsContext() { ErrorEmail = "" };
-            email = EmailInput.Text;
-        }
-
         private void ToggleButton2RoomsChecked(object sender, RoutedEventArgs e)
         {
             is2Room = true;
@@ -221,59 +189,30 @@ namespace fk
         {
             time = (string)((ComboBoxItem)Time_Selecter.SelectedValue).Content;
         }
-        private void PriceChanged(object sender, TextChangedEventArgs e)
-        {
-            try
-            {
-                if (((TextBox)sender).Text == "")
-                {
-                    ((TextBox)sender).Text = "0";
-                    ((TextBox)sender).CaretIndex = ((TextBox)sender).Text.Length;
-                }
-
-                if (((TextBox)sender).Text.Length > 11)
-                {
-                    DigitBeforeInput.Text = priceBefore.ToString();
-                    DigitAfterInput.Text = priceAfter.ToString();
-                    ((TextBox)sender).CaretIndex = ((TextBox)sender).Text.Length;
-                    return;
-                }
-
-                if (!Validator.ValidateDigit(DigitAfterInput.Text, 0, (int)1e9) ||
-                    !Validator.ValidateDigit(DigitBeforeInput.Text, 0, (int)1e9))
-                {
-                    DigitBeforeInput.Text = priceBefore.ToString();
-                    DigitAfterInput.Text = priceAfter.ToString();
-                    ((TextBox)sender).CaretIndex = ((TextBox)sender).Text.Length;
-                    return;
-                }
-                
-                if (int.Parse(DigitBeforeInput.Text) >= int.Parse(DigitAfterInput.Text))
-                {
-                    DigitBeforeInput.Text = priceBefore.ToString();
-                    DigitAfterInput.Text = priceAfter.ToString();
-                    ((TextBox)sender).CaretIndex = ((TextBox)sender).Text.Length;
-                    return;
-                }
-
-                priceBefore = int.Parse(DigitBeforeInput.Text);
-                priceAfter = int.Parse(DigitAfterInput.Text);
-                DigitBeforeInput.Text = priceBefore.ToString();
-                DigitAfterInput.Text = priceAfter.ToString();
-                ((TextBox)sender).CaretIndex = ((TextBox)sender).Text.Length;
-            }
-            catch (Exception) { }
-        }
 
         private void ButtonSubmit(object sender, RoutedEventArgs e)
         {
-            if (Error_email.Text != "" ||
-                EmailInput.Text == "" ||
-                (!is2Room && !is3Room))
+            if (!is2Room && !is3Room)
             {
                 Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Проверьте правильность фильтров" };
                 return;
             }
+
+            if (!Validator.ValidateDigit(DigitAfterInput.Text, 0, (int)1e9) ||
+                !Validator.ValidateDigit(DigitBeforeInput.Text, 0, (int)1e9))
+            {
+                Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Проверьте диапазон цен" };
+                return;
+            }
+
+            if (int.Parse(DigitBeforeInput.Text) >= int.Parse(DigitAfterInput.Text))
+            {
+                Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Цена \"от\" должна быть меньше цены \"до\"" };
+                return;
+            }
+
+            priceBefore = int.Parse(DigitBeforeInput.Text);
+            priceAfter = int.Parse(DigitAfterInput.Text);
 
             if (sender.Equals(SubmitSend))
             {
@@ -287,6 +226,10 @@ namespace fk
             else if (sender.Equals(SubmitSave))
             {
                 Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Сохранение фильтров успешно! Письма будут приходить вам на почту в указаное время" };
+            }
+            else if (sender.Equals(SubmitFind))
+            {
+                Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Объявления загружаются..." };
             }
         }
     }

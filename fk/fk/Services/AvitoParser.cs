@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using fk.Models;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +8,7 @@ using System.Net;
 using System.Text;
 using System.Windows;
 
-namespace fk
+namespace fk.Services
 {
     class AvitoParser : IParser
     {

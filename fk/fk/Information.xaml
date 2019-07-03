@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:fk"
         mc:Ignorable="d"
-        Title="О программе" Height="300" Width="250" Icon="home.ico"
+        Title="Фильтр квартир > О программе" Height="300" Width="250" Icon="home.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"

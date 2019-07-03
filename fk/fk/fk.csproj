@@ -64,15 +64,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Auth.xaml.cs">
+      <DependentUpon>Auth.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AuthForm.cs" />
     <Compile Include="Utils\EmailSender.cs" />
     <Compile Include="Utils\ErrorsContext.cs" />
     <Compile Include="Services\DomofondParser.cs" />
     <Compile Include="Information.xaml.cs">
       <DependentUpon>Information.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Utils\SingleInstance.cs" />
     <Compile Include="Utils\TableCreator.cs" />
     <Compile Include="Utils\Validator.cs" />
+    <Page Include="Auth.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Information.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

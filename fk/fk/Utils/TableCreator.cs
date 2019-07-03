@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Configuration;
 using Aspose.Cells;
+using fk.Models;
 
-namespace fk
+namespace fk.Utils
 {
     public class TableCreator
     {
