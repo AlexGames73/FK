@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:fk"
         WindowStyle="ToolWindow"
-        Title="Фильтр квартир" Height="550" Width="320" Icon="home.ico"
+        Title="Фильтр квартир > Фильтры" Height="470" Width="320" Icon="home.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -24,32 +24,25 @@
     </Window.Resources>
     <Grid Background="LightGray">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <ListBox SelectionChanged="ListboxSaleRent_SelectionChanged" Name="listboxSaleRent" Style="{StaticResource MaterialDesignToolToggleListBox}" SelectedIndex="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="56,10,56,0" Background="#FFECECEC" Height="28" Width="200" Grid.ColumnSpan="2">
+        <ListBox SelectionChanged="ListboxSaleRent_SelectionChanged" Name="listboxSaleRent" Style="{StaticResource MaterialDesignToolToggleListBox}" SelectedIndex="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="57,10,57,0" Background="#FFECECEC" Height="28" Width="200" Grid.ColumnSpan="4">
             <ListBoxItem Width="100" HorizontalContentAlignment="Center" Content="Купить"/>
             <ListBoxItem Width="100" HorizontalContentAlignment="Center" Content="Снять"/>
         </ListBox>
-        <TextBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                 materialDesign:HintAssist.FloatingOffset="1,-20" Margin="16,43,16,0" 
-                 materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Center" 
-                 VerticalAlignment="Top" Width="280" FontSize="20" Height="60" Background="{x:Null}" Padding="6,0,0,2"
-                 TextChanged="TextBox_TextChanged" Name="EmailInput" Grid.ColumnSpan="2">
-            <materialDesign:HintAssist.Hint>
-                <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
-                    <materialDesign:PackIcon Kind="Account" Width="28" Height="28" />
-                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Введите E-Mail</TextBlock>
-                </StackPanel>
-            </materialDesign:HintAssist.Hint>
-        </TextBox>
-        <TextBlock Name="Error_email" Text="{Binding ErrorEmail}" Margin="16,108,16,396" VerticalAlignment="Center" FontSize="13" Foreground="Red" Grid.ColumnSpan="2" Height="16"/>
+        <TextBlock Name="Error_email" Text="{Binding ErrorEmail}" Margin="10,106,10,0" VerticalAlignment="Top" FontSize="13" Foreground="Red" Grid.ColumnSpan="4" Height="16"/>
         <ComboBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
                   materialDesign:HintAssist.FloatingOffset="1,-20" SelectionChanged="Cities_SelectionChanged"
                   materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Left" Name="Cities_Selecter"
-                  Margin="16,129,0,0" VerticalAlignment="Top" Width="280" SelectedIndex="0" Height="58" FontSize="20" VerticalContentAlignment="Center" Grid.ColumnSpan="2">
+                  Margin="10,43,0,0" VerticalAlignment="Top" Width="294" SelectedIndex="0" Height="58" FontSize="20" VerticalContentAlignment="Center" Grid.ColumnSpan="4">
             <materialDesign:HintAssist.Hint>
-                <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Город поиска</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Город поиска</TextBlock>
+                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom" Foreground="Red">*</TextBlock>
+                </StackPanel>
             </materialDesign:HintAssist.Hint>
             <ComboBoxItem>Ульяновск</ComboBoxItem>
             <ComboBoxItem>Москва</ComboBoxItem>
@@ -70,10 +63,13 @@
         <ComboBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
                   materialDesign:HintAssist.FloatingOffset="1,-20" SelectionChanged="Time_SelectionChanged"
                   materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Left"  Name="Time_Selecter"
-                  Margin="16,192,0,0" VerticalAlignment="Top" Width="280" SelectedIndex="0" 
-                  Height="64" FontSize="20" VerticalContentAlignment="Center" Grid.ColumnSpan="2">
+                  Margin="10,127,0,0" VerticalAlignment="Top" Width="294" SelectedIndex="0" 
+                  Height="64" FontSize="20" VerticalContentAlignment="Center" Grid.ColumnSpan="4">
             <materialDesign:HintAssist.Hint>
-                <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Время рассылки</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Время рассылки</TextBlock>
+                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom" Foreground="Red">*</TextBlock>
+                </StackPanel>
             </materialDesign:HintAssist.Hint>
             <ComboBoxItem>00:00</ComboBoxItem>
             <ComboBoxItem>01:00</ComboBoxItem>
@@ -100,42 +96,46 @@
             <ComboBoxItem>22:00</ComboBoxItem>
             <ComboBoxItem>23:00</ComboBoxItem>
         </ComboBox>
-        <StackPanel Orientation="Horizontal" Margin="16,261,0,215">
+        <StackPanel Orientation="Horizontal" Margin="10,210,1,0" Grid.ColumnSpan="2" VerticalAlignment="Top">
             <ToggleButton Checked="ToggleButton2RoomsChecked" Unchecked="ToggleButton2RoomsUnchecked" Style="{StaticResource MaterialDesignSwitchToggleButton}" VerticalAlignment="Center" Margin="8 0 0 0"/>
             <TextBlock Text="2-х комнатные" Foreground="Black" VerticalAlignment="Center"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="2,261,16,215" Grid.Column="1">
+        <StackPanel Orientation="Horizontal" Margin="0,210,10,0" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Top">
             <ToggleButton Checked="ToggleButton3RoomsChecked" Unchecked="ToggleButton3RoomsUnchecked" Style="{StaticResource MaterialDesignSwitchToggleButton}" VerticalAlignment="Center" Margin="8 0 0 0"/>
             <TextBlock Text="3-х комнатные" Foreground="Black" VerticalAlignment="Center"/>
         </StackPanel>
         <TextBox materialDesign:HintAssist.FloatingScale=".9" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                 materialDesign:HintAssist.FloatingOffset="-5,-20" Margin="16,310,0,0" 
+                 materialDesign:HintAssist.FloatingOffset="-5,-20" Margin="10,242,0,0" 
                  materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Center" 
-                 VerticalAlignment="Top" Width="140" FontSize="14" Height="41" Background="{x:Null}" 
-                 Padding="6,0,0,2" TextChanged="PriceChanged" Name="DigitBeforeInput"
-                 Text="0">
+                 VerticalAlignment="Top" Width="147" FontSize="14" Height="41" Background="{x:Null}" 
+                 Padding="6,0,0,2" Name="DigitBeforeInput" Text="0" Grid.ColumnSpan="2">
             <materialDesign:HintAssist.Hint>
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
                     <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Цена от:</TextBlock>
+                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom" Foreground="Red">*</TextBlock>
                 </StackPanel>
             </materialDesign:HintAssist.Hint>
 
         </TextBox>
         <TextBox materialDesign:HintAssist.FloatingScale=".9" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                 materialDesign:HintAssist.FloatingOffset="-5,-20" Margin="0,310,16,0" 
+                 materialDesign:HintAssist.FloatingOffset="-5,-20" Margin="0,242,10,0" 
                  materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Center" 
-                 VerticalAlignment="Top" Width="140" FontSize="14" Height="41" Background="{x:Null}" 
-                 Padding="6,0,0,2" TextChanged="PriceChanged" Name="DigitAfterInput"
-                 Text="10000000" Grid.Column="1">
+                 VerticalAlignment="Top" Width="147" FontSize="14" Height="41" Background="{x:Null}" 
+                 Padding="6,0,0,2" Name="DigitAfterInput" Text="10000000" Grid.Column="2" Grid.ColumnSpan="2">
             <materialDesign:HintAssist.Hint>
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
                     <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Цена до:</TextBlock>
+                    <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom" Foreground="Red">*</TextBlock>
                 </StackPanel>
             </materialDesign:HintAssist.Hint>
         </TextBox>
-        <TextBlock Text="Вы можете ввести число в диапазоне            от 0 до 1000000000" TextAlignment="Center" TextWrapping="Wrap" Margin="16,356,16,112" VerticalAlignment="Center" FontSize="13" Height="52" Grid.ColumnSpan="2"/>
-        <Button Name="SubmitSend" Click="ButtonSubmit" Content="Отправить" HorizontalAlignment="Left" Margin="16,413,0,0" VerticalAlignment="Top" Width="130"/>
-        <Button Name="SubmitSave" Click="ButtonSubmit" Content="Сохранить" HorizontalAlignment="Left" Margin="10,413,0,0" VerticalAlignment="Top" Width="130" Grid.Column="1"/>
-        <TextBlock x:Name="Msg_Submit" HorizontalAlignment="Center" Margin="16,0,16,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Height="59" Width="280" TextAlignment="Center" FontSize="15" Grid.ColumnSpan="2"/>
+        <TextBlock TextAlignment="Center" TextWrapping="Wrap" Margin="10,288,10,2" VerticalAlignment="Top" FontSize="13" Height="50" Grid.ColumnSpan="4">
+            Вы можете ввести число в диапазоне<LineBreak/>
+            от 0 до 1000000000
+        </TextBlock>
+        <Button Name="SubmitSend" Click="ButtonSubmit" Content="Отправить" HorizontalAlignment="Left" Margin="10,338,0,0" VerticalAlignment="Top" Padding="0 0 0 0" Width="85"/>
+        <Button Name="SubmitSave" Click="ButtonSubmit" Content="Сохранить" Margin="0,338,10,0" VerticalAlignment="Top" Padding="0 0 0 0" HorizontalAlignment="Right" Width="84" Grid.ColumnSpan="2" Grid.Column="1"/>
+        <Button Name="SubmitFind" Click="ButtonSubmit" Content="Найти" Margin="10,338,10,0" VerticalAlignment="Top" Padding="0 0 0 0" Grid.Column="3"/>
+        <TextBlock x:Name="Msg_Submit" HorizontalAlignment="Center" Margin="10,375,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="59" Width="294" TextAlignment="Center" FontSize="15" Grid.ColumnSpan="4"/>
     </Grid>
 </Window>

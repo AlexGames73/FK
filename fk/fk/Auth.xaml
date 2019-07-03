@@ -1,0 +1,63 @@
+﻿<Window x:Class="fk.Auth"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:fk"
+        WindowStyle="ToolWindow"
+        Title="Фильтр квартир > Авторизация" Height="218" Width="420" Icon="home.ico"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:models="clr-namespace:fk.Models"
+        xmlns:converters="clr-namespace:fk.Converters"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}" ResizeMode="NoResize">
+    <Window.Resources>
+        <models:AuthForm x:Key="authForm" IsEmailValid="False" IsEmailSend="False" IsActivated="False"/>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </Window.Resources>
+    <Grid DataContext="{StaticResource authForm}">
+        <TextBlock Margin="10,10,10,0" TextAlignment="Center" VerticalAlignment="Top">
+            На эту почту придет письмо с кодом<LineBreak/>
+            Введите его в поле ниже
+        </TextBlock>
+        <StackPanel Orientation="Horizontal" Margin="10,46,0,0" Width="374" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left" 
+                    IsEnabled="{Binding Path=IsEmailSend, Converter={StaticResource InverseBooleanConverter}}">
+            <TextBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                 materialDesign:HintAssist.FloatingOffset="1,-20"
+                 materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Center" 
+                 VerticalAlignment="Top" Width="260" FontSize="20" Height="60" Background="{x:Null}" Padding="6,0,0,2"
+                 Name="EmailInput" TextChanged="EmailInput_TextChanged">
+                <materialDesign:HintAssist.Hint>
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+                        <materialDesign:PackIcon Kind="Account" Width="28" Height="28" />
+                        <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Введите E-Mail</TextBlock>
+                        <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom" Foreground="Red">*</TextBlock>
+                    </StackPanel>
+                </materialDesign:HintAssist.Hint>
+            </TextBox>
+            <Button Click="Button_Click" Content="Далее" Height="40" Padding="0" IsEnabled="{Binding IsEmailValid}" VerticalAlignment="Top" Width="104" Margin="10,20,0,0"/>
+        </StackPanel>
+        <StackPanel Margin="10,111,0,0" Orientation="Horizontal" VerticalAlignment="Top" IsEnabled="{Binding IsEmailSend}" Width="374" Height="60" HorizontalAlignment="Left">
+            <TextBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                 materialDesign:HintAssist.FloatingOffset="1,-20"
+                 materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Center" 
+                 VerticalAlignment="Top" Width="260" FontSize="20" Height="60" Background="{x:Null}" Padding="6,0,0,2"
+                 Name="CodeInput" TextChanged="CodeInput_TextChanged">
+                <materialDesign:HintAssist.Hint>
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+                        <materialDesign:PackIcon Kind="Key" Width="28" Height="28" />
+                        <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Введите ключ</TextBlock>
+                        <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom" Foreground="Red">*</TextBlock>
+                    </StackPanel>
+                </materialDesign:HintAssist.Hint>
+            </TextBox>
+            <Button Content="Далее" Height="40" Padding="0" VerticalAlignment="Top" Width="104" Margin="10,20,0,0" IsEnabled="{Binding IsActivated}"/>
+        </StackPanel>
+
+    </Grid>
+</Window>

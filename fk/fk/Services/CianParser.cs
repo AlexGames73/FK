@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using fk.Models;
+using HtmlAgilityPack;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
@@ -11,7 +12,7 @@ using System.Web.Script.Serialization;
 using System.Xml;
 using static System.Net.WebRequestMethods;
 
-namespace fk
+namespace fk.Services
 {
     class CianParser : IParser
     {

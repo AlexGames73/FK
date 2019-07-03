@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 
-namespace fk
+namespace fk.Utils
 {
     public class EmailSender
     {
