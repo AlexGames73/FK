@@ -53,7 +53,7 @@ namespace fk
             return MainUrl + ExtraInfo + City + "?" + priceUrl + roomsCountUrl + "&Page=" + page;
         }
 
-        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
+        public override Apartment[] Parse(PanelAds panelAds, bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
         {
             List<Apartment> apartments = new List<Apartment>();
             HtmlDocument MainPage = GetHtml(GetURL(true, GetRegion(City), RoomsCount, PriceLow, PriceHigh, 1));
@@ -69,14 +69,16 @@ namespace fk
                 HtmlNodeCollection extraLinks = document.DocumentNode.SelectNodes(".//a[@class='long-item-card__item___ubItG']");
                 foreach (HtmlNode htmlNode in extraLinks)
                 {
-                    apartments.Add(GetApartment(htmlNode));
-
+                    Apartment apartment = GetApartment(htmlNode);
+                    apartments.Add(apartment);
+                    panelAds.AddToQueue(apartment);
                 }
                 HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//a[@class='long-item-card__item___ubItG search-results__itemCardNotFirst___3fei6']");
                 foreach (HtmlNode htmlNode in links)
                 {
-                    apartments.Add(GetApartment(htmlNode));
-
+                    Apartment apartment = GetApartment(htmlNode);
+                    apartments.Add(apartment);
+                    panelAds.AddToQueue(apartment);
                 }
             }
             return apartments.ToArray();

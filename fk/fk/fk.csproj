@@ -64,6 +64,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="PanelAds.xaml.cs">
+      <DependentUpon>PanelAds.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\EmailSender.cs" />
     <Compile Include="Utils\ErrorsContext.cs" />
     <Compile Include="Services\DomofondParser.cs" />

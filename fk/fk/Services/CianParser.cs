@@ -45,7 +45,7 @@ namespace fk
             return url;
         }
 
-        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
+        public override Apartment[] Parse(PanelAds panelAds, bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1)
         {
             List<Apartment> res = new List<Apartment>();
             
@@ -56,7 +56,9 @@ namespace fk
             HtmlNodeCollection htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
             foreach (HtmlNode node in htmlNodes)
             {
-                res.Add(Parse(node));
+                Apartment apartment = Parse(node);
+                res.Add(apartment);
+                panelAds.AddToQueue(apartment);
                 count++;
             }
             for (int i = 1; count < totalCount && i < pages; i++)
@@ -65,7 +67,9 @@ namespace fk
                 htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
                 foreach (HtmlNode node in htmlNodes)
                 {
-                    res.Add(Parse(node));
+                    Apartment apartment = Parse(node);
+                    res.Add(apartment);
+                    panelAds.AddToQueue(apartment);
                     count++;
                 }
             }

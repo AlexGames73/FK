@@ -139,7 +139,7 @@ namespace fk
 
         public void Parse(object o)
         {
-            var data = ((bool, string, int[], int, int, int))o;
+            var data = ((bool, string, int[], int, int, int, PanelAds))o;
 
             apartments.Clear();
 
@@ -148,11 +148,11 @@ namespace fk
             IParser domofondParser = new DomofondParser();
 
             Console.WriteLine("1 парсер");
-            try { apartments.AddRange(cianParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            try { apartments.AddRange(cianParser.Parse(data.Item7, data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
             Console.WriteLine("2 парсер");
-            try { apartments.AddRange(avitoParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            try { apartments.AddRange(avitoParser.Parse(data.Item7, data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
             Console.WriteLine("3 парсер");
-            try { apartments.AddRange(domofondParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            try { apartments.AddRange(domofondParser.Parse(data.Item7, data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
 
             apartments.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
 
@@ -277,12 +277,13 @@ namespace fk
 
             if (sender.Equals(SubmitSend))
             {
+                PanelAds panelAds = new PanelAds();
                 Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Ожидайте письма на почту в течении 20 минут" };
                 Thread thread = new Thread(Parse);
                 List<int> rooms = new List<int>();
                 if (is2Room) rooms.Add(2);
                 if (is3Room) rooms.Add(3);
-                thread.Start((rentSale == 0, city, rooms.ToArray(), priceBefore, priceAfter, PAGES));
+                thread.Start((rentSale == 0, city, rooms.ToArray(), priceBefore, priceAfter, PAGES, panelAds));
             }
             else if (sender.Equals(SubmitSave))
             {

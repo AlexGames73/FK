@@ -4,12 +4,40 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:fk"
-        mc:Ignorable="d"
-        Title="PanelAds" Height="450" Width="800">
+        WindowStyle="ToolWindow"
+        Title="Объявления" Height="450" Width="700" Icon="home.ico"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}" Topmost="True" ResizeMode="NoResize">
+    <Window.Resources>
+        
+    </Window.Resources>
     <Grid>
-        <ScrollViewer HorizontalAlignment="Left" Height="400" Margin="10,10,0,0" VerticalAlignment="Top" Width="774">
-            <StackPanel>
-            </StackPanel>
+        <ScrollViewer HorizontalAlignment="Left" Height="400" Margin="10,10,0,0" VerticalAlignment="Top" Width="674">
+            <ListBox x:Name="contentAds">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:Apartment}">
+                        <materialDesign:Card>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Height="100" Width="100" HorizontalAlignment="Left" Margin="10"></Image>
+                                <StackPanel Orientation="Vertical" Margin="10" Width="500">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Price}" Margin="0,0,0,10" FontWeight="Bold" FontSize="20"/>
+                                        <TextBlock Text="₽" Margin="5,0,0,10" FontWeight="Bold" FontSize="20"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Title}" Margin="0,0,0,5" FontSize="18"/>
+                                    <TextBlock Text="{Binding Address}" FontSize="18"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </materialDesign:Card>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </ScrollViewer>
     </Grid>
 </Window>
