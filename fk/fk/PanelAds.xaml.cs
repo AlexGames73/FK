@@ -26,14 +26,21 @@ namespace fk
     {
         public  Queue<Apartment> queueApartments = new Queue<Apartment>();
         ObservableCollection<Apartment> apartments = new ObservableCollection<Apartment>();
-        
+        Thread thread;
+
         public PanelAds()
         {
             InitializeComponent();
             Show();
-            Thread thread = new Thread(LoadAds);
+            thread = new Thread(LoadAds);
             thread.Start();
             contentAds.ItemsSource = apartments;
+            Closing += OnClosing;
+        }
+
+        public void OnClosing(object sender, CancelEventArgs e)
+        {
+            thread.Abort();
         }
 
         public void LoadAds()

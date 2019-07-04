@@ -54,6 +54,8 @@ namespace fk.Services
             string square = info.Split(',')[1].Split(' ')[1];
             string price = htmlNode.SelectNodes(".//span[@itemprop='price']")[0].GetAttributeValue("content", "");
             string address = htmlNode.SelectNodes(".//p[@class='address']")[0].InnerText.Trim().Replace("&nbsp;", " ");
+            string urlImage = htmlNode.SelectNodes(".//li[@class='item-slider-item js-item-slider-item ']")[0].SelectNodes(".//img[@class='large-picture-img']")[0].GetAttributeValue("src", "");
+            string link = urlAvito + htmlNode.SelectNodes(".//a[@class='js-item-slider item-slider']")[0].GetAttributeValue("href", "");
             return new Apartment {
                 Address = address,
                 Price = price,
@@ -74,7 +76,7 @@ namespace fk.Services
             for (int i = 0; i < pages; i++)
             {
                 HtmlDocument document = GetHtml(GetURL(true, GetRegion(City), RoomsCount, PriceLow, PriceHigh, i + 1));
-                HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='description item_table-description']");
+                HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='item item_table clearfix js-catalog-item-enum js-item-trackable item-with-contact js-item-extended']");
                 foreach (HtmlNode htmlNode in links)
                 {
                     try {

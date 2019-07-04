@@ -102,6 +102,9 @@ namespace fk.Services
             pricepieces[pricepieces.Length - 1] = "";
             string price = string.Join("", pricepieces);
             string address = htmlNode.SelectNodes(".//span[@class='long-item-card__address___PVI5p']")[0].InnerText;
+            string title = htmlNode.SelectNodes(".//div[@class='long-item-card__informationHeaderRight___3bkKw']/span")[0].GetAttributeValue("title", "");
+            string urlImage =  htmlNode.SelectNodes(".//div[@class='img__cover___3zeI6 card-photo__cover___lxXXm']/img")[0].GetAttributeValue("src", "");
+            string link = htmlNode.GetAttributeValue("target href", "");
             return new Apartment
             {
                 Address = address,
