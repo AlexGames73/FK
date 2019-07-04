@@ -37,14 +37,16 @@ namespace fk.Services
             AddCity("Ульяновск", "/ulyanovsk");
         }
 
-        public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page)
+        public override string GetURL(Filters filters, int page = 1)
         {
-            string ExtraInfo = isBuy ? prodam : sdam;
+            string ExtraInfo = filters.IsBuy ? prodam : sdam;
             string roomsCount = "549_";
-            for (int i = 0; i < RoomsCount.Length; i++)
-                roomsCount += 5695 + RoomsCount[i] + "-";
-            string urlInfo = $"&pmax={PriceHigh}&pmin={PriceLow}&f={roomsCount}&p={page}";
-            return urlAvito + City + ExtraInfo + urlInfo;
+            if (filters.Is2Room)
+                roomsCount += "5697-";
+            if (filters.Is3Room)
+                roomsCount += "5698-";
+            string urlInfo = $"&pmax={filters.PriceTo}&pmin={filters.PriceFrom}&f={roomsCount}&p={page}";
+            return urlAvito + GetRegion(filters.City) + ExtraInfo + urlInfo;
         }
         
         public Apartment GetApartment(HtmlNode htmlNode)
@@ -64,10 +66,10 @@ namespace fk.Services
             };
         }
 
-        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1, PanelAds panelAds = null)
+        public override Apartment[] Parse(Filters filters, int pages = 1, PanelAds panelAds = null)
         {
             List<Apartment> apartments = new List<Apartment>();
-            HtmlDocument MainPage = GetHtml(GetURL(true, GetRegion(City), RoomsCount, PriceLow, PriceHigh, 1));
+            HtmlDocument MainPage = GetHtml(GetURL(filters));
             if (MainPage.DocumentNode.SelectNodes(".//div[@class='pagination js-pages']") != null)
             {
                 pages = Math.Min(pages,
@@ -75,8 +77,8 @@ namespace fk.Services
             }
             for (int i = 0; i < pages; i++)
             {
-                HtmlDocument document = GetHtml(GetURL(true, GetRegion(City), RoomsCount, PriceLow, PriceHigh, i + 1));
-                HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='item item_table clearfix js-catalog-item-enum js-item-trackable item-with-contact js-item-extended']");
+                HtmlDocument document = GetHtml(GetURL(filters, i + 1));
+                HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='description item_table-description']");
                 foreach (HtmlNode htmlNode in links)
                 {
                     try {

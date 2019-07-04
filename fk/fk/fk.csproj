@@ -98,6 +98,8 @@
       <DependentUpon>Auth.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\AuthForm.cs" />
+    <Compile Include="Models\Filters.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="PanelAds.xaml.cs">
       <DependentUpon>PanelAds.xaml</DependentUpon>
     </Compile>
@@ -108,6 +110,7 @@
       <DependentUpon>Information.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Utils\SaveLoad.cs" />
     <Compile Include="Utils\SingleInstance.cs" />
     <Compile Include="Utils\TableCreator.cs" />
     <Compile Include="Utils\Validator.cs" />

@@ -56,8 +56,7 @@
                     </StackPanel>
                 </materialDesign:HintAssist.Hint>
             </TextBox>
-            <Button Content="Далее" Height="40" Padding="0" VerticalAlignment="Top" Width="104" Margin="10,20,0,0" IsEnabled="{Binding IsActivated}"/>
+            <Button Click="Button_Click_Activate" Content="Далее" Height="40" Padding="0" VerticalAlignment="Top" Width="104" Margin="10,20,0,0" IsEnabled="{Binding IsActivated}"/>
         </StackPanel>
-
     </Grid>
 </Window>

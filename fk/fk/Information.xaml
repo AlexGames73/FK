@@ -15,7 +15,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}" 
         WindowStartupLocation="CenterScreen"
-        ShowInTaskbar="False" ResizeMode="NoResize" Topmost="True">
+        ShowInTaskbar="False" ResizeMode="NoResize">
     <Grid Background="LightGray">
         <TextBlock HorizontalAlignment="Left" Height="249" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="222"><InlineUIContainer>
                 <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Disabled"

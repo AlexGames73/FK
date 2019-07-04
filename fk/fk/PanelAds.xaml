@@ -14,12 +14,12 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}" Topmost="True" ResizeMode="NoResize">
+        FontFamily="{DynamicResource MaterialDesignFont}" ResizeMode="NoResize">
     <Window.Resources>
         
     </Window.Resources>
     <Grid>
-        <ScrollViewer HorizontalAlignment="Left" Height="400" Margin="10,10,0,0" VerticalAlignment="Top" Width="674">
+        <ScrollViewer PreviewMouseWheel="ListViewScrollViewer_PreviewMouseWheel" HorizontalAlignment="Left" Height="400" Margin="10,10,0,0" VerticalAlignment="Top" Width="674">
             <ListBox x:Name="contentAds">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:Apartment}">

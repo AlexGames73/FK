@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -35,41 +36,38 @@ namespace fk.Services
             AddCity("Ульяновск", "5027");
         }
 
-        public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
+        public override string GetURL(Filters filters, int page = 1)
         {
-            var deal_type = isBuy ? "sale" : "rent";
+            var deal_type = filters.IsBuy ? "sale" : "rent";
             List<string> rooms = new List<string>();
-            foreach (int room in RoomsCount)
-                rooms.Add($"room{room}=1");
+            if (filters.Is2Room)
+                rooms.Add($"room2=1");
+            if (filters.Is3Room)
+                rooms.Add($"room3=1");
             string roomsGET = string.Join("&", rooms.ToArray());
-            string url = $"https://cian.ru/cat.php?deal_type={deal_type}&engine_version=2&quality=0&offer_type=flat&maxprice={PriceHigh}&minprice={PriceLow}&region={GetRegion(City)}&{roomsGET}&sort=price_object_order&p={page}";
+            string url = $"https://cian.ru/cat.php?deal_type={deal_type}&engine_version=2&quality=0&offer_type=flat&maxprice={filters.PriceTo}&minprice={filters.PriceFrom}&region={GetRegion(filters.City)}&{roomsGET}&sort=price_object_order&p={page}";
             return url;
         }
 
-        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1, PanelAds panelAds = null)
+        public override Apartment[] Parse(Filters filters, int pages = 1, PanelAds panelAds = null)
         {
             List<Apartment> res = new List<Apartment>();
             
-            HtmlDocument document = GetHtml(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh));
-            var test = document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']");
-            int totalCount = int.Parse(test[0].InnerText.Split(' ')[0]);
-            int count = 0;
-            HtmlNodeCollection htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
-            foreach (HtmlNode node in htmlNodes)
+            HtmlDocument document = GetHtml(GetURL(filters));
+            var test = document.DocumentNode.SelectNodes(".//*[contains(@class, 'totalOffers')]")[0].InnerText.Split(' ');
+            int i = 0;
+            int totalCount = 0;
+            int buf = 0;
+            while (int.TryParse(test[i], out buf))
             {
-                try
-                {
-                    Apartment apartment = Parse(node);
-                    res.Add(apartment);
-                    count++;
-                    panelAds.AddToQueue(apartment);
-                }
-                catch { }
+                totalCount = totalCount * 1000 + buf;
+                i++;
             }
-            for (int i = 1; count < totalCount && i < pages; i++)
+            int count = 0;
+            for (i = 0; count < totalCount && i < pages; i++)
             {
-                document = GetHtml(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh, i + 1));
-                htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
+                document = GetHtml(GetURL(filters, i + 1));
+                HtmlNodeCollection htmlNodes = document.DocumentNode.SelectNodes("//*[contains(@class, 'card')]");
                 foreach (HtmlNode node in htmlNodes)
                 {
                     try
@@ -88,19 +86,28 @@ namespace fk.Services
 
         public Apartment Parse(HtmlNode node)
         {
-            string[] title = node.SelectSingleNode(".//*[@class='c6e8ba5398--title--2CW78']").InnerText.Split(',');
-            string rooms = title[0][0].ToString();
-            string square = title[1].Trim().Split(' ')[0];
-            List<string> prices = new List<string>(node.SelectSingleNode(".//*[@class='c6e8ba5398--header--1df-X']").InnerText.Split(' '));
+            string title = node.SelectSingleNode(".//*[contains(@class, 'title')]").InnerText;
+            string[] titles = title.Split(',');
+            string rooms = titles[0][0].ToString();
+            string square = titles[1].Trim().Split(' ')[0];
+            HtmlNode pricececes = node.SelectSingleNode(".//*[contains(@class, 'price') and contains(@class, 'flex') and contains(@class, 'container')]/div[1]/div[1]");
+            List<string> prices = new List<string>(pricececes.InnerText.Split(' '));
             prices.RemoveAt(prices.Count - 1);
             string price = string.Join("", prices.ToArray());
-            string address = node.SelectSingleNode("//*[@class='c6e8ba5398--address-links--1pHHO']/span").GetAttributeValue("content", "-");
+            string address = node.SelectSingleNode(".//*[contains(@class, 'address-links')]/span").GetAttributeValue("content", "-");
+
+            string avaUrl = node.SelectSingleNode(".//span[@itemprop='url']").GetAttributeValue("content", "");
+            string url = node.SelectSingleNode(".//a[contains(@class, 'header')]").GetAttributeValue("href", "");
+
             return new Apartment
             {
                 Address = address,
                 Price = price,
                 Rooms = rooms,
-                Square = square
+                Square = square,
+                Title = title,
+                AvaUrl = avaUrl,
+                Url = url
             };
         }
     }

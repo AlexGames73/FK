@@ -26,21 +26,15 @@ namespace fk
     {
         public  Queue<Apartment> queueApartments = new Queue<Apartment>();
         ObservableCollection<Apartment> apartments = new ObservableCollection<Apartment>();
-        Thread thread;
-
+        
         public PanelAds()
         {
             InitializeComponent();
             Show();
-            thread = new Thread(LoadAds);
+            Thread thread = new Thread(LoadAds);
+            thread.IsBackground = true;
             thread.Start();
             contentAds.ItemsSource = apartments;
-            Closing += OnClosing;
-        }
-
-        public void OnClosing(object sender, CancelEventArgs e)
-        {
-            thread.Abort();
         }
 
         public void LoadAds()
@@ -62,6 +56,13 @@ namespace fk
         public void InitAd(Apartment apartment)
         {
             apartments.Add(apartment);
+        }
+
+        public void ListViewScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scv = (ScrollViewer)sender;
+            scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
+            e.Handled = true;
         }
     }
 }

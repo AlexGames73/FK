@@ -19,7 +19,7 @@ namespace fk
     public partial class App : Application, ISingleInstanceApp
     {
         // TODO: Make this unique!
-        private const string Unique = "Change this to something that uniquely identifies your program.";
+        private const string Unique = "v947ynotwyatio7b6yw4alt7ylia7wyn98l57cdy4ioth2ourxc87oy4tg9wyn";
 
         [STAThread]
         public static void Main()
