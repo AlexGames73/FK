@@ -37,21 +37,14 @@ namespace fk
         public const int PAGES = 2;
 
         public static MainWindow Instance;
-
-        public static int rentSale = 0;
-        public static string email = "permenev.alex@ya.ru";
-        public static string city = "Ульяновск";
-        public static string time = "00:00";
-        public static bool is2Room = true;
-        public static bool is3Room = true;
-        public static int priceBefore = 0;
-        public static int priceAfter = 1000000000;
+        public User user;
 
         public NotifyIcon ni;
         public List<Apartment> apartments = new List<Apartment>();
 
         public MainWindow()
         {
+            Hide();
             InitializeComponent();
 
             Left = SystemParameters.PrimaryScreenWidth - Width - 10;
@@ -62,7 +55,39 @@ namespace fk
             ni.MouseClick += Ni_MouseClick;
             Closing += OnClosing;
             Topmost = true;
+
             Instance = this;
+
+            user = SaveLoad.Load();
+            if (user.Email == null)
+            {
+                Auth auth = new Auth();
+            }
+            else
+            {
+                OpenWindow();
+            }
+
+            Thread thread = new Thread(SendingPost);
+            thread.IsBackground = true;
+            thread.Start();
+        }
+
+        public void SendingPost()
+        {
+            bool isSend = true;
+            while (true)
+            {
+                if (isSend && DateTime.Now.Hour == 18 && DateTime.Now.Minute == 0)
+                {
+                    isSend = false;
+                    ParseSend(user.Filters);
+                }
+                else if (DateTime.Now.Hour != 18)
+                {
+                    isSend = true;
+                }
+            }
         }
 
         private void Ni_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -107,6 +132,7 @@ namespace fk
 
         public void OpenWindow()
         {
+            DataContext = user.Filters;
             Show();
             WindowState = WindowState.Normal;
         }
@@ -118,7 +144,7 @@ namespace fk
 
         public void ParseSend(object o)
         {
-            var data = ((bool, string, int[], int, int, int))o;
+            var data = (Filters)o;
 
             apartments.Clear();
 
@@ -127,21 +153,21 @@ namespace fk
             IParser domofondParser = new DomofondParser();
 
             Console.WriteLine("1 парсер");
-            try { apartments.AddRange(cianParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            try { apartments.AddRange(cianParser.Parse(data, PAGES)); } catch (Exception) { }
             Console.WriteLine("2 парсер");
-            try { apartments.AddRange(avitoParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            try { apartments.AddRange(avitoParser.Parse(data, PAGES)); } catch (Exception) { }
             Console.WriteLine("3 парсер");
-            try { apartments.AddRange(domofondParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6)); } catch (Exception) { }
+            try { apartments.AddRange(domofondParser.Parse(data, PAGES)); } catch (Exception) { }
 
             apartments.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
             
-                Console.WriteLine("Создание и отправка таблицы");
-                EmailSender.Send(email, TableCreator.CreateTable(apartments));
+            Console.WriteLine("Создание и отправка таблицы");
+            EmailSender.Send(user.Email, EmailSender.MessageType.Mailing, TableCreator.CreateTable(apartments));
         }
 
         public void ParseFind(object o)
         {
-            var data = ((bool, string, int[], int, int, int, PanelAds))o;
+            var data = ((Filters, PanelAds))o;
 
             apartments.Clear();
 
@@ -150,11 +176,11 @@ namespace fk
             IParser domofondParser = new DomofondParser();
 
             Console.WriteLine("1 парсер");
-            try { apartments.AddRange(cianParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6, data.Item7)); } catch (Exception) { }
+            try { apartments.AddRange(cianParser.Parse(data.Item1, PAGES, data.Item2)); } catch (Exception) { }
             Console.WriteLine("2 парсер");
-            try { apartments.AddRange(avitoParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6, data.Item7)); } catch (Exception) { }
+            try { apartments.AddRange(avitoParser.Parse(data.Item1, PAGES, data.Item2)); } catch (Exception) { }
             Console.WriteLine("3 парсер");
-            try { apartments.AddRange(domofondParser.Parse(data.Item1, data.Item2, data.Item3, data.Item4, data.Item5, data.Item6, data.Item7)); } catch (Exception) { }
+            try { apartments.AddRange(domofondParser.Parse(data.Item1, PAGES, data.Item2)); } catch (Exception) { }
 
             apartments.Sort((a, b) => int.Parse(a.Price) - int.Parse(b.Price));
         }
@@ -173,46 +199,9 @@ namespace fk
             }
         }
 
-        private void ListboxSaleRent_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (listboxSaleRent.SelectedIndex == -1)
-                listboxSaleRent.SelectedIndex = rentSale;
-            rentSale = listboxSaleRent.SelectedIndex;
-        }
-
-        private void ToggleButton2RoomsChecked(object sender, RoutedEventArgs e)
-        {
-            is2Room = true;
-        }
-
-        private void ToggleButton2RoomsUnchecked(object sender, RoutedEventArgs e)
-        {
-            is2Room = false;
-        }
-
-        private void ToggleButton3RoomsChecked(object sender, RoutedEventArgs e)
-        {
-            is3Room = true;
-        }
-
-        private void ToggleButton3RoomsUnchecked(object sender, RoutedEventArgs e)
-        {
-            is3Room = false;
-        }
-
-        private void Cities_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            city = (string)((ComboBoxItem)Cities_Selecter.SelectedValue).Content;
-        }
-
-        private void Time_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            time = (string)((ComboBoxItem)Time_Selecter.SelectedValue).Content;
-        }
-
         private void ButtonSubmit(object sender, RoutedEventArgs e)
         {
-            if (!is2Room && !is3Room)
+            if (Toggle2.IsChecked == false && Toggle3.IsChecked == false)
             {
                 Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Проверьте правильность фильтров" };
                 return;
@@ -231,32 +220,18 @@ namespace fk
                 return;
             }
 
-            priceBefore = int.Parse(DigitBeforeInput.Text);
-            priceAfter = int.Parse(DigitAfterInput.Text);
+            user.Filters.IsBuy = listboxSaleRent.SelectedIndex == 0;
+            user.Filters.City = Cities_Selecter.Text;
+            user.Filters.PriceFrom = DigitBeforeInput.Text;
+            user.Filters.PriceTo = DigitAfterInput.Text;
+            user.Filters.Is2Room = (bool)Toggle2.IsChecked;
+            user.Filters.Is3Room = (bool)Toggle3.IsChecked;
+            SaveLoad.Save(user);
 
-            if (sender.Equals(SubmitSend))
-            {
-                Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Ожидайте письма на почту в течении 20 минут" };
-                Thread thread = new Thread(ParseSend);
-                List<int> rooms = new List<int>();
-                if (is2Room) rooms.Add(2);
-                if (is3Room) rooms.Add(3);
-                thread.Start((rentSale == 0, city, rooms.ToArray(), priceBefore, priceAfter, PAGES));
-            }
-            else if (sender.Equals(SubmitSave))
-            {
-                Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Сохранение фильтров успешно! Письма будут приходить вам на почту в указаное время" };
-            }
-            else if (sender.Equals(SubmitFind))
-            {
-                Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Объявления загружаются..." };
-                PanelAds panelAds = new PanelAds();
-                Thread thread = new Thread(ParseFind);
-                List<int> rooms = new List<int>();
-                if (is2Room) rooms.Add(2);
-                if (is3Room) rooms.Add(3);
-                thread.Start((rentSale == 0, city, rooms.ToArray(), priceBefore, priceAfter, PAGES, panelAds));
-            }
+            Msg_Submit.DataContext = new ErrorsContext() { MsgSubmit = "Объявления загружаются..." };
+            PanelAds panelAds = new PanelAds();
+            Thread thread = new Thread(ParseFind);
+            thread.Start((user.Filters, panelAds));
         }
     }
 }

@@ -11,23 +11,39 @@ namespace fk.Utils
 {
     public class EmailSender
     {
-        public static void Send(string emailAddress, byte[] message)
+        private static Dictionary<MessageType, (string, string)> Messages = new Dictionary<MessageType, (string, string)>()
+        {
+            { MessageType.Mailing, (
+                "Рассылка приложения \"Фильтр квартир\"",
+
+                "<h1 style=\"text-align=center;\">Самые свежие предложения квартир с популярных сайтов уже собраны для Вас!</h1>"
+            ) },
+
+            { MessageType.Activation, (
+                "Код активации приложения \"Фильтр квартир\"",
+
+                "<p>Код активации приложения.</p>" + "<br/><br/>" +
+                "<h1>{0}</h1>" + "<br/><br/>" +
+                "<p>Никому не сообщайте этот код в целях вашей же безопасности.</p>"
+            ) }
+        };
+
+        public enum MessageType
+        {
+            Mailing, Activation
+        }
+
+        public static void Send(string emailAddress, MessageType messageType, params object[] parameters)
         {
             MailAddress From = new MailAddress("filter.kvartir@yandex.ru", "Фильтр Квартир");
             MailAddress To = new MailAddress(emailAddress);
             MailMessage Message = new MailMessage(From, To);
-            Message.Subject = "Рассылка от приложения \"Фильтр квартир\" ";
-            Message.Body = "Здравствуйте! Самые свежие предложения квартир с популярных сайтов уже собраны для Вас! Хорошего дня!  ";
+            Message.Subject = Messages[messageType].Item1;
+            Message.Body = string.Format(Messages[messageType].Item2, parameters[0]);
 
-            bool isNext = false;
-            while (!isNext)
-            {
-                try {
-                    Message.Attachments.Add(new Attachment(new MemoryStream(message), "Список квартир.xlsx"));
-                    isNext = true;
-                } catch (Exception) { }
-            }
-            Message.IsBodyHtml = false;
+            if (parameters[0].GetType() == typeof(byte[]))
+                Message.Attachments.Add(new Attachment(new MemoryStream((byte[])parameters[0]), "Список квартир.xlsx"));
+            Message.IsBodyHtml = true;
 
             string smtpHost = "smtp.yandex.ru";
             int smtpPort = 587;

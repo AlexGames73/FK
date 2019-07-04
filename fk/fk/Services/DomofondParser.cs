@@ -35,29 +35,22 @@ namespace fk.Services
             AddCity("Ульяновск", "ulyanovsk-c2181");
         }
 
-        public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
+        public override string GetURL(Filters filters, int page = 1)
         {
-            string ExtraInfo = isBuy ? prodam : sdam;
+            string ExtraInfo = filters.IsBuy ? prodam : sdam;
             string roomsCountUrl = "Rooms=";
-            for (int i = 0; i < RoomsCount.Length; i++)
-            {
-                string wordCount = "";
-                if (RoomsCount[i] == 1)
-                    wordCount = "One";
-                if (RoomsCount[i] == 2)
-                    wordCount = "Two";
-                if (RoomsCount[i] == 3)
-                    wordCount = "Three";
-                roomsCountUrl += wordCount + "%2C";
-            }
-            string priceUrl = $"PriceFrom={PriceLow}&PriceTo={PriceHigh}&";
-            return MainUrl + ExtraInfo + City + "?" + priceUrl + roomsCountUrl + "&Page=" + page;
+            if (filters.Is2Room)
+                roomsCountUrl += "Two%2C";
+            if (filters.Is3Room)
+                roomsCountUrl += "Three%2C";
+            string priceUrl = $"PriceFrom={filters.PriceFrom}&PriceTo={filters.PriceTo}&";
+            return MainUrl + ExtraInfo + GetRegion(filters.City) + "?" + priceUrl + roomsCountUrl + "&Page=" + page;
         }
 
-        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1, PanelAds panelAds = null)
+        public override Apartment[] Parse(Filters filters, int pages = 1, PanelAds panelAds = null)
         {
             List<Apartment> apartments = new List<Apartment>();
-            HtmlDocument MainPage = GetHtml(GetURL(true, GetRegion(City), RoomsCount, PriceLow, PriceHigh, 1));
+            HtmlDocument MainPage = GetHtml(GetURL(filters));
             HtmlNodeCollection documentPages = MainPage.DocumentNode.SelectNodes(".//ul[@class='pagination__mainPages___2v12k']");
             if (documentPages != null)
             {
@@ -66,7 +59,7 @@ namespace fk.Services
             }
             for (int i = 0; i < pages; i++)
             {
-                HtmlDocument document = GetHtml(GetURL(true, GetRegion(City), RoomsCount, PriceLow, PriceHigh, i + 1));
+                HtmlDocument document = GetHtml(GetURL(filters, i + 1));
                 HtmlNodeCollection extraLinks = document.DocumentNode.SelectNodes(".//a[@class='long-item-card__item___ubItG']");
                 foreach (HtmlNode htmlNode in extraLinks)
                 {

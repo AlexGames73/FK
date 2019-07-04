@@ -15,6 +15,8 @@ using System.Net.Mail;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using fk.Models;
+using fk.Utils;
+using System.IO;
 
 namespace fk
 {
@@ -28,6 +30,7 @@ namespace fk
         public Auth()
         {
             InitializeComponent();
+            Show();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -39,15 +42,7 @@ namespace fk
 
         private void EmailInput_TextChanged(object sender, TextChangedEventArgs e)
         {
-            try
-            {
-                new MailAddress(EmailInput.Text);
-                ((AuthForm)Resources["authForm"]).IsEmailValid = true;
-            }
-            catch (Exception)
-            {
-                ((AuthForm)Resources["authForm"]).IsEmailValid = false;
-            }
+            ((AuthForm)Resources["authForm"]).IsEmailValid = Validator.ValidateEmail(EmailInput.Text);
         }
 
         private void CodeInput_TextChanged(object sender, TextChangedEventArgs e)
@@ -64,8 +59,17 @@ namespace fk
             {
                 ((AuthForm)Resources["authForm"]).IsEmailSend = true;
                 generatedCode = string.Format("{0,0:D6}", new Random(DateTime.Now.Millisecond).Next(0, 1000000));
-                //SEND MAIL
+                EmailSender.Send(EmailInput.Text, EmailSender.MessageType.Activation, generatedCode);
             }
+        }
+
+        private void Button_Click_Activate(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Instance.user.Email = EmailInput.Text;
+            SaveLoad.Save(MainWindow.Instance.user);
+
+            MainWindow.Instance.OpenWindow();
+            Close();
         }
     }
 }

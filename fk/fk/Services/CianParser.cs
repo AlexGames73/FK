@@ -35,41 +35,31 @@ namespace fk.Services
             AddCity("Ульяновск", "5027");
         }
 
-        public override string GetURL(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int page = 1)
+        public override string GetURL(Filters filters, int page = 1)
         {
-            var deal_type = isBuy ? "sale" : "rent";
+            var deal_type = filters.IsBuy ? "sale" : "rent";
             List<string> rooms = new List<string>();
-            foreach (int room in RoomsCount)
-                rooms.Add($"room{room}=1");
+            if (filters.Is2Room)
+                rooms.Add($"room2=1");
+            if (filters.Is3Room)
+                rooms.Add($"room3=1");
             string roomsGET = string.Join("&", rooms.ToArray());
-            string url = $"https://cian.ru/cat.php?deal_type={deal_type}&engine_version=2&quality=0&offer_type=flat&maxprice={PriceHigh}&minprice={PriceLow}&region={GetRegion(City)}&{roomsGET}&sort=price_object_order&p={page}";
+            string url = $"https://cian.ru/cat.php?deal_type={deal_type}&engine_version=2&quality=0&offer_type=flat&maxprice={filters.PriceTo}&minprice={filters.PriceFrom}&region={GetRegion(filters.City)}&{roomsGET}&sort=price_object_order&p={page}";
             return url;
         }
 
-        public override Apartment[] Parse(bool isBuy, string City, int[] RoomsCount, int PriceLow, int PriceHigh, int pages = 1, PanelAds panelAds = null)
+        public override Apartment[] Parse(Filters filters, int pages = 1, PanelAds panelAds = null)
         {
             List<Apartment> res = new List<Apartment>();
             
-            HtmlDocument document = GetHtml(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh));
+            HtmlDocument document = GetHtml(GetURL(filters));
             var test = document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']");
             int totalCount = int.Parse(test[0].InnerText.Split(' ')[0]);
             int count = 0;
-            HtmlNodeCollection htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
-            foreach (HtmlNode node in htmlNodes)
+            for (int i = 0; count < totalCount && i < pages; i++)
             {
-                try
-                {
-                    Apartment apartment = Parse(node);
-                    res.Add(apartment);
-                    count++;
-                    panelAds.AddToQueue(apartment);
-                }
-                catch { }
-            }
-            for (int i = 1; count < totalCount && i < pages; i++)
-            {
-                document = GetHtml(GetURL(isBuy, City, RoomsCount, PriceLow, PriceHigh, i + 1));
-                htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
+                document = GetHtml(GetURL(filters, i + 1));
+                HtmlNodeCollection htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
                 foreach (HtmlNode node in htmlNodes)
                 {
                     try

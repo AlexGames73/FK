@@ -32,6 +32,7 @@ namespace fk
             InitializeComponent();
             Show();
             Thread thread = new Thread(LoadAds);
+            thread.IsBackground = true;
             thread.Start();
             contentAds.ItemsSource = apartments;
         }
