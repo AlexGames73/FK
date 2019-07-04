@@ -54,7 +54,6 @@ namespace fk
             ni.Icon = new Icon(Application.GetResourceStream(new Uri("pack://application:,,,/home.ico", UriKind.RelativeOrAbsolute)).Stream);
             ni.MouseClick += Ni_MouseClick;
             Closing += OnClosing;
-            Topmost = true;
 
             Instance = this;
 

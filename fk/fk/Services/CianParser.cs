@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -53,13 +54,20 @@ namespace fk.Services
             List<Apartment> res = new List<Apartment>();
             
             HtmlDocument document = GetHtml(GetURL(filters));
-            var test = document.DocumentNode.SelectNodes(".//*[@class='_93444fe79c--totalOffers--22-FL']");
-            int totalCount = int.Parse(test[0].InnerText.Split(' ')[0]);
+            var test = document.DocumentNode.SelectNodes(".//*[contains(@class, 'totalOffers')]")[0].InnerText.Split(' ');
+            int i = 0;
+            int totalCount = 0;
+            int buf = 0;
+            while (int.TryParse(test[i], out buf))
+            {
+                totalCount = totalCount * 1000 + buf;
+                i++;
+            }
             int count = 0;
-            for (int i = 0; count < totalCount && i < pages; i++)
+            for (i = 0; count < totalCount && i < pages; i++)
             {
                 document = GetHtml(GetURL(filters, i + 1));
-                HtmlNodeCollection htmlNodes = document.DocumentNode.SelectNodes("//*[@class='c6e8ba5398--info--WcX5M']");
+                HtmlNodeCollection htmlNodes = document.DocumentNode.SelectNodes("//*[contains(@class, 'card')]");
                 foreach (HtmlNode node in htmlNodes)
                 {
                     try
@@ -78,19 +86,28 @@ namespace fk.Services
 
         public Apartment Parse(HtmlNode node)
         {
-            string[] title = node.SelectSingleNode(".//*[@class='c6e8ba5398--title--2CW78']").InnerText.Split(',');
-            string rooms = title[0][0].ToString();
-            string square = title[1].Trim().Split(' ')[0];
-            List<string> prices = new List<string>(node.SelectSingleNode(".//*[@class='c6e8ba5398--header--1df-X']").InnerText.Split(' '));
+            string title = node.SelectSingleNode(".//*[contains(@class, 'title')]").InnerText;
+            string[] titles = title.Split(',');
+            string rooms = titles[0][0].ToString();
+            string square = titles[1].Trim().Split(' ')[0];
+            HtmlNode pricececes = node.SelectSingleNode(".//*[contains(@class, 'price') and contains(@class, 'flex') and contains(@class, 'container')]/div[1]/div[1]");
+            List<string> prices = new List<string>(pricececes.InnerText.Split(' '));
             prices.RemoveAt(prices.Count - 1);
             string price = string.Join("", prices.ToArray());
-            string address = node.SelectSingleNode("//*[@class='c6e8ba5398--address-links--1pHHO']/span").GetAttributeValue("content", "-");
+            string address = node.SelectSingleNode(".//*[contains(@class, 'address-links')]/span").GetAttributeValue("content", "-");
+
+            string avaUrl = node.SelectSingleNode(".//span[@itemprop='url']").GetAttributeValue("content", "");
+            string url = node.SelectSingleNode(".//a[contains(@class, 'header')]").GetAttributeValue("href", "");
+
             return new Apartment
             {
                 Address = address,
                 Price = price,
                 Rooms = rooms,
-                Square = square
+                Square = square,
+                Title = title,
+                AvaUrl = avaUrl,
+                Url = url
             };
         }
     }
