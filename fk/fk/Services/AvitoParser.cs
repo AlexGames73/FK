@@ -51,18 +51,21 @@ namespace fk.Services
         
         public Apartment GetApartment(HtmlNode htmlNode)
         {
-            string info = htmlNode.SelectNodes(".//span[@itemprop='name']")[0].InnerHtml;
+            string info = htmlNode.SelectNodes(".//span[@itemprop='name']")[0].InnerText;
             string rooms = info.Split(',')[0].Split('-')[0];
             string square = info.Split(',')[1].Split(' ')[1];
             string price = htmlNode.SelectNodes(".//span[@itemprop='price']")[0].GetAttributeValue("content", "");
             string address = htmlNode.SelectNodes(".//p[@class='address']")[0].InnerText.Trim().Replace("&nbsp;", " ");
-            string urlImage = htmlNode.SelectNodes(".//li[@class='item-slider-item js-item-slider-item ']")[0].SelectNodes(".//img[@class='large-picture-img']")[0].GetAttributeValue("src", "");
+            string urlImage = "http:" + htmlNode.SelectNodes(".//li[@class='item-slider-item js-item-slider-item ']/div/img")[0].GetAttributeValue("src", "");
             string link = urlAvito + htmlNode.SelectNodes(".//a[@class='js-item-slider item-slider']")[0].GetAttributeValue("href", "");
             return new Apartment {
                 Address = address,
                 Price = price,
                 Rooms = rooms,
-                Square = square
+                Square = square,
+                Title = info,
+                AvaUrl = urlImage,
+                Url = link
             };
         }
 
@@ -78,7 +81,7 @@ namespace fk.Services
             for (int i = 0; i < pages; i++)
             {
                 HtmlDocument document = GetHtml(GetURL(filters, i + 1));
-                HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='description item_table-description']");
+                HtmlNodeCollection links = document.DocumentNode.SelectNodes(".//div[@class='item item_table clearfix js-catalog-item-enum  item-with-contact js-item-extended']");
                 foreach (HtmlNode htmlNode in links)
                 {
                     try {

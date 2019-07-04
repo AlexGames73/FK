@@ -98,6 +98,8 @@ namespace fk.Services
 
             string avaUrl = node.SelectSingleNode(".//span[@itemprop='url']").GetAttributeValue("content", "");
             string url = node.SelectSingleNode(".//a[contains(@class, 'header')]").GetAttributeValue("href", "");
+            string info = node.SelectSingleNode(".//div[@class='c6e8ba5398--container--F3yyv c6e8ba5398--container--2FmSu c6e8ba5398--top3-description--1kHIT']").InnerText;
+            info = String.Join(" ", info.Split(new String[] { "..." }, StringSplitOptions.RemoveEmptyEntries)[0]);
 
             return new Apartment
             {
@@ -107,6 +109,7 @@ namespace fk.Services
                 Square = square,
                 Title = title,
                 AvaUrl = avaUrl,
+                Info = info,
                 Url = url
             };
         }

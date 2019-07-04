@@ -23,36 +23,59 @@
             <ListBox x:Name="contentAds">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:Apartment}">
-                        <Button x:Name="Card" Height="130">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch">
-                                <Image Height="100" Width="100" HorizontalAlignment="Left" Margin="10"></Image>
-                                <StackPanel Orientation="Vertical" Margin="10" Width="480">
+                        <materialDesign:Card Name="Card" Height="130">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" Width="652">
+                                <TextBlock>
+                                    <Hyperlink NavigateUri="{Binding Url}">
+                                        <Image Height="100" Width="100" HorizontalAlignment="Left" Margin="10" Source="{Binding AvaUrl}" ToolTip="Нажмите чтобы перейти"/>
+                                    </Hyperlink>
+                                </TextBlock>
+                                <StackPanel Orientation="Vertical" Margin="10" Width="400">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Price}" Margin="0,0,0,10" FontWeight="Bold" FontSize="20"/>
                                         <TextBlock Text="₽" Margin="5,0,0,10" FontWeight="Bold" FontSize="20"/>
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Square, StringFormat=' {0} м², '}" Margin="0,0,0,5" FontSize="18"/>
-                                        <TextBlock Text="{Binding Rooms, StringFormat=' {0}-к квартира'}" Margin="5,0,0,5" FontSize="20"/>
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding Title}" Margin="0,0,0,5" FontSize="18"/>
                                     <TextBlock Text="{Binding Address}" TextWrapping="Wrap" FontSize="18" Margin="0,0,5,0" Height="50"/>
-                                    <TextBlock Text="{Binding Contacts}" FontSize="18"/>
-                                    <TextBlock Text="{Binding Info}" TextWrapping="Wrap" FontSize="18" Margin="0,0,5,0"/>
+                                    <TextBlock Text="{Binding Info}" TextWrapping="Wrap" Height="90" FontSize="18" Margin="0,0,5,0"/>
+                                    <TextBlock>
+                                        <Hyperlink NavigateUri="{Binding Url}" Click="Hyperlink_Click">
+                                            Подробнее
+                                        </Hyperlink>
+                                    </TextBlock>
                                 </StackPanel>
+                                <Grid>
+                                    <Button Name="Button1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90" Margin="0,0,0,10" Padding="0" Content="Развернуть">
+                                        <Button.Triggers>
+                                            <EventTrigger RoutedEvent="Button.Click">
+                                                <EventTrigger.Actions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Height" Storyboard.TargetName="Card"
+                                                                 From="130" To="250" Duration="0:0:1"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger.Actions>
+                                            </EventTrigger>
+                                        </Button.Triggers>
+                                    </Button>
+                                    <!--<Button Name="Button2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90" Margin="0,0,0,10" Padding="0" Content="Свернуть">
+                                        <Button.Triggers>
+                                            <EventTrigger RoutedEvent="Button.Click">
+                                                <EventTrigger.Actions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Height" Storyboard.TargetName="Card"
+                                                                 From="250" To="130" Duration="0:0:1"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger.Actions>
+                                            </EventTrigger>
+                                        </Button.Triggers>
+                                    </Button>-->
+                                </Grid>
                             </StackPanel>
-                            <Button.Triggers>
-                                <EventTrigger RoutedEvent="Button.Click">
-                                    <EventTrigger.Actions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="Height" Storyboard.TargetName="Card"
-                                                             From="130" To="250" Duration="0:0:1"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger.Actions>
-                                </EventTrigger>
-                            </Button.Triggers>
-                        </Button>
+                        </materialDesign:Card>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

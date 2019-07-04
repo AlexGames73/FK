@@ -38,7 +38,7 @@ namespace fk
 
         public static MainWindow Instance;
         public User user;
-
+        Thread thread;
         public NotifyIcon ni;
         public List<Apartment> apartments = new List<Apartment>();
 
@@ -67,8 +67,7 @@ namespace fk
                 OpenWindow();
             }
 
-            Thread thread = new Thread(SendingPost);
-            thread.IsBackground = true;
+            thread = new Thread(SendingPost);
             thread.Start();
         }
 
@@ -106,7 +105,10 @@ namespace fk
         private void OnClosing(object sender, CancelEventArgs e)
         {
             if (WindowState == WindowState.Minimized)
+            {
                 ni.Dispose();
+                thread.Abort();
+            }
             else
             {
                 HideWindow();

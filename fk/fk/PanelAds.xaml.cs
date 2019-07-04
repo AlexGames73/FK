@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using fk.Models;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace fk
 {
@@ -26,15 +27,21 @@ namespace fk
     {
         public  Queue<Apartment> queueApartments = new Queue<Apartment>();
         ObservableCollection<Apartment> apartments = new ObservableCollection<Apartment>();
+        Thread thread;
         
         public PanelAds()
         {
             InitializeComponent();
             Show();
-            Thread thread = new Thread(LoadAds);
-            thread.IsBackground = true;
+            thread = new Thread(LoadAds);
             thread.Start();
             contentAds.ItemsSource = apartments;
+            Closing += ClickClose;
+        }
+
+        public void ClickClose(object sender, CancelEventArgs e)
+        {
+            thread.Abort();
         }
 
         public void LoadAds()
@@ -63,6 +70,11 @@ namespace fk
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
+        }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(((Hyperlink)sender).NavigateUri.AbsoluteUri);
         }
     }
 }

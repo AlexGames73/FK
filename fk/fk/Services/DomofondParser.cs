@@ -88,22 +88,29 @@ namespace fk.Services
         
         public Apartment GetApartment(HtmlNode htmlNode)
         {
-            string info = htmlNode.SelectNodes(".//div[@class='long-item-card__informationHeaderRight___3bkKw']")[0].InnerText;
-            string rooms = info.Split(',')[0].Split('-')[0];
-            string square = info.Split(',')[1].Split(' ')[1];
+            string infoRoomsSquare = htmlNode.SelectNodes(".//div[@class='long-item-card__informationHeaderRight___3bkKw']")[0].InnerText;
+            string rooms = infoRoomsSquare.Split(',')[0].Split('-')[0];
+            string square = infoRoomsSquare.Split(',')[1].Split(' ')[1];
             string[] pricepieces = htmlNode.SelectNodes(".//div[@class='long-item-card__priceContainer___29DcY']")[0].InnerText.Split(' ');
             pricepieces[pricepieces.Length - 1] = "";
             string price = string.Join("", pricepieces);
             string address = htmlNode.SelectNodes(".//span[@class='long-item-card__address___PVI5p']")[0].InnerText;
             string title = htmlNode.SelectNodes(".//div[@class='long-item-card__informationHeaderRight___3bkKw']/span")[0].GetAttributeValue("title", "");
-            string urlImage =  htmlNode.SelectNodes(".//div[@class='img__cover___3zeI6 card-photo__cover___lxXXm']/img")[0].GetAttributeValue("src", "");
-            string link = htmlNode.GetAttributeValue("target href", "");
+            try
+            {
+                string urlImage = htmlNode.SelectNodes(".//div[@class='img__cover___3zeI6 card-photo__cover___lxXXm']/img")[0].GetAttributeValue("src", "");
+            }
+            catch { }
+            string link = MainUrl + htmlNode.GetAttributeValue("href", "");
+            string info = htmlNode.SelectSingleNode(".//div[@class='description__descriptionBlock___3KWc1']/p[1]").InnerText;
             return new Apartment
             {
                 Address = address,
                 Price = price,
                 Rooms = rooms,
-                Square = square
+                Square = square,
+                Url = link,
+                Info = info
             };
         }
     }
