@@ -53,13 +53,19 @@
                                                         <Storyboard>
                                                             <DoubleAnimation Storyboard.TargetProperty="Height" Storyboard.TargetName="Card"
                                                                  From="130" To="250" Duration="0:0:1"/>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Button2" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Button1" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
                                                         </Storyboard>
                                                     </BeginStoryboard>
                                                 </EventTrigger.Actions>
                                             </EventTrigger>
                                         </Button.Triggers>
                                     </Button>
-                                    <!--<Button Name="Button2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90" Margin="0,0,0,10" Padding="0" Content="Свернуть">
+                                    <Button Name="Button2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90" Margin="0,0,0,10" Padding="0" Content="Свернуть" Visibility="Hidden">
                                         <Button.Triggers>
                                             <EventTrigger RoutedEvent="Button.Click">
                                                 <EventTrigger.Actions>
@@ -67,12 +73,18 @@
                                                         <Storyboard>
                                                             <DoubleAnimation Storyboard.TargetProperty="Height" Storyboard.TargetName="Card"
                                                                  From="250" To="130" Duration="0:0:1"/>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Button1" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Button2" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
                                                         </Storyboard>
                                                     </BeginStoryboard>
                                                 </EventTrigger.Actions>
                                             </EventTrigger>
                                         </Button.Triggers>
-                                    </Button>-->
+                                    </Button>
                                 </Grid>
                             </StackPanel>
                         </materialDesign:Card>

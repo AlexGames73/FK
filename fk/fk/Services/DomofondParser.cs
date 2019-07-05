@@ -1,5 +1,7 @@
 ﻿using fk.Models;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,13 +61,15 @@ namespace fk.Services
             }
             for (int i = 0; i < pages; i++)
             {
+                int j = -1;
                 HtmlDocument document = GetHtml(GetURL(filters, i + 1));
                 HtmlNodeCollection extraLinks = document.DocumentNode.SelectNodes(".//a[@class='long-item-card__item___ubItG']");
                 foreach (HtmlNode htmlNode in extraLinks)
                 {
                     try
                     {
-                        Apartment apartment = GetApartment(htmlNode);
+                        j++;
+                        Apartment apartment = GetApartment(document.DocumentNode, htmlNode, j);
                         apartments.Add(apartment);
                         panelAds.AddToQueue(apartment);
                     }
@@ -76,7 +80,8 @@ namespace fk.Services
                 {
                     try
                     {
-                        Apartment apartment = GetApartment(htmlNode);
+                        j++;
+                        Apartment apartment = GetApartment(document.DocumentNode, htmlNode, j);
                         apartments.Add(apartment);
                         panelAds.AddToQueue(apartment);
                     }
@@ -86,7 +91,7 @@ namespace fk.Services
             return apartments.ToArray();
         }
         
-        public Apartment GetApartment(HtmlNode htmlNode)
+        public Apartment GetApartment(HtmlNode mainPage, HtmlNode htmlNode, int ind)
         {
             string infoRoomsSquare = htmlNode.SelectNodes(".//div[@class='long-item-card__informationHeaderRight___3bkKw']")[0].InnerText;
             string rooms = infoRoomsSquare.Split(',')[0].Split('-')[0];
@@ -96,11 +101,9 @@ namespace fk.Services
             string price = string.Join("", pricepieces);
             string address = htmlNode.SelectNodes(".//span[@class='long-item-card__address___PVI5p']")[0].InnerText;
             string title = htmlNode.SelectNodes(".//div[@class='long-item-card__informationHeaderRight___3bkKw']/span")[0].GetAttributeValue("title", "");
-            try
-            {
-                string urlImage = htmlNode.SelectNodes(".//div[@class='img__cover___3zeI6 card-photo__cover___lxXXm']/img")[0].GetAttributeValue("src", "");
-            }
-            catch { }
+            string json = mainPage.SelectSingleNode("/html/head/script[8]").InnerText.Replace("window.__INITIAL_DATA__ = ", "");
+            dynamic buf = JObject.Parse(json);
+            string avaUrl = (string)buf.itemsState.items[ind].thumbnailUrls[1].url;
             string link = MainUrl + htmlNode.GetAttributeValue("href", "");
             string info = htmlNode.SelectSingleNode(".//div[@class='description__descriptionBlock___3KWc1']/p[1]").InnerText;
             return new Apartment
@@ -109,7 +112,9 @@ namespace fk.Services
                 Price = price,
                 Rooms = rooms,
                 Square = square,
+                Title = title,
                 Url = link,
+                AvaUrl = avaUrl,
                 Info = info
             };
         }
