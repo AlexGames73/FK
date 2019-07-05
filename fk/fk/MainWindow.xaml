@@ -37,7 +37,6 @@
             <ListBoxItem IsSelected="{Binding IsBuy}" Width="100" HorizontalContentAlignment="Center" Content="Купить"/>
             <ListBoxItem IsSelected="{Binding IsBuy, Converter={StaticResource InverseBooleanConverter}}" Width="100" HorizontalContentAlignment="Center" Content="Снять"/>
         </ListBox>
-        <TextBlock Name="Error_email" Text="{Binding ErrorEmail}" Margin="10,106,10,0" VerticalAlignment="Top" FontSize="13" Foreground="Red" Grid.ColumnSpan="4" Height="16"/>
         <ComboBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
                   materialDesign:HintAssist.FloatingOffset="1,-20"
                   materialDesign:HintAssist.IsFloating="True" HorizontalAlignment="Left" Name="Cities_Selecter"
@@ -104,6 +103,6 @@
             от 0 до 1000000000
         </TextBlock>
         <Button Name="SubmitFind" Click="ButtonSubmit" Content="Найти" Margin="10,255,10,0" VerticalAlignment="Top" Padding="0 0 0 0" Grid.Column="3"/>
-        <TextBlock x:Name="Msg_Submit" HorizontalAlignment="Center" Margin="10,292,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="59" Width="294" TextAlignment="Center" FontSize="15" Grid.ColumnSpan="4"/>
+        <TextBlock x:Name="Msg_Submit" Text="{Binding MsgSubmit}" HorizontalAlignment="Center" Margin="10,292,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="59" Width="294" TextAlignment="Center" FontSize="15" Grid.ColumnSpan="4"/>
     </Grid>
 </Window>

@@ -40,11 +40,11 @@ namespace fk.Services
         public override string GetURL(Filters filters, int page = 1)
         {
             string ExtraInfo = filters.IsBuy ? prodam : sdam;
-            string roomsCount = "549_";
+            string roomsCount = filters.IsBuy ? "549_" : "550_";
             if (filters.Is2Room)
-                roomsCount += "5697-";
+                roomsCount += filters.IsBuy ? "5697-" : "5704-";
             if (filters.Is3Room)
-                roomsCount += "5698-";
+                roomsCount += filters.IsBuy ? "5698-" : "5705-";
             string urlInfo = $"&pmax={filters.PriceTo}&pmin={filters.PriceFrom}&f={roomsCount}&p={page}";
             return urlAvito + GetRegion(filters.City) + ExtraInfo + urlInfo;
         }
@@ -56,7 +56,11 @@ namespace fk.Services
             string square = info.Split(',')[1].Split(' ')[1];
             string price = htmlNode.SelectNodes(".//span[@itemprop='price']")[0].GetAttributeValue("content", "");
             string address = htmlNode.SelectNodes(".//p[@class='address']")[0].InnerText.Trim().Replace("&nbsp;", " ");
-            string urlImage = "http:" + htmlNode.SelectNodes(".//li[@class='item-slider-item js-item-slider-item ']/div/img")[0].GetAttributeValue("src", "");
+            string urlImage = htmlNode.SelectNodes(".//li[@class='item-slider-item js-item-slider-item ']/div/img")[0].GetAttributeValue("src", "");
+            if (urlImage.Count((x) => x == ':') != 0)
+                urlImage = "https:" + htmlNode.SelectNodes(".//li[@class='item-slider-item js-item-slider-item ']/div/noscript/img")[0].GetAttributeValue("src", "");
+            else
+                urlImage = "https:" + urlImage;
             string link = urlAvito + htmlNode.SelectNodes(".//a[@class='js-item-slider item-slider']")[0].GetAttributeValue("href", "");
             return new Apartment {
                 Address = address,

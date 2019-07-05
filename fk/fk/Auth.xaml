@@ -40,7 +40,13 @@
                     </StackPanel>
                 </materialDesign:HintAssist.Hint>
             </TextBox>
-            <Button Click="Button_Click" Content="Далее" Height="40" Padding="0" IsEnabled="{Binding IsEmailValid}" VerticalAlignment="Top" Width="104" Margin="10,20,0,0"/>
+            <Button Click="Button_Click" Height="40" Padding="0" IsEnabled="{Binding IsEmailValid}" VerticalAlignment="Top" Width="104" Margin="10,20,0,0">
+                <TextBlock TextAlignment="Center">
+                    Отправить
+                    <LineBreak/>
+                    код
+                </TextBlock>
+            </Button>
         </StackPanel>
         <StackPanel Margin="10,111,0,0" Orientation="Horizontal" VerticalAlignment="Top" IsEnabled="{Binding IsEmailSend}" Width="374" Height="60" HorizontalAlignment="Left">
             <TextBox materialDesign:HintAssist.FloatingScale=".7" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
@@ -51,12 +57,12 @@
                 <materialDesign:HintAssist.Hint>
                     <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
                         <materialDesign:PackIcon Kind="Key" Width="28" Height="28" />
-                        <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Введите ключ</TextBlock>
+                        <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom">Введите код</TextBlock>
                         <TextBlock Padding="5,0,0,0" VerticalAlignment="Bottom" Foreground="Red">*</TextBlock>
                     </StackPanel>
                 </materialDesign:HintAssist.Hint>
             </TextBox>
-            <Button Click="Button_Click_Activate" Content="Далее" Height="40" Padding="0" VerticalAlignment="Top" Width="104" Margin="10,20,0,0" IsEnabled="{Binding IsActivated}"/>
+            <Button Click="Button_Click_Activate" Content="Подтвердить" Height="40" Padding="0" VerticalAlignment="Top" Width="104" Margin="10,20,0,0" IsEnabled="{Binding IsActivated}"/>
         </StackPanel>
     </Grid>
 </Window>
